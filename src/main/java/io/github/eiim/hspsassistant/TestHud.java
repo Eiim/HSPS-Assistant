@@ -16,7 +16,9 @@ public class TestHud {
 	
 	@SubscribeEvent
     public void onRender(RenderGameOverlayEvent.Text event) {
-		fr.func_238405_a_(event.getMatrixStack(), "Test HUD running!", 100, 50, 15728880);
+		fr.func_238405_a_(event.getMatrixStack(), "Hypixel Server Parkour", 10, 10, 0xFFFFFF);
+		fr.func_238405_a_(event.getMatrixStack(), "Lobby Map", 10, 20, 0xFFFFFF);
+		fr.func_238405_a_(event.getMatrixStack(), "All Checkpoints 1.8-1.12", 10, 30, 0xFFFFFF);
     }
 	
 	@SubscribeEvent

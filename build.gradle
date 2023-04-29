@@ -50,6 +50,10 @@ minecraft {
 
             // Recommended logging level for the console
             property 'forge.logging.console.level', 'debug'
+            
+            // Enable devauth for easier testing
+            property 'devauth.enabled', 'true'
+            property 'devauth.account', 'main' // You may need to override when setting up DevAuth, see https://github.com/DJtheRedstoner/DevAuth
 
             mods {
                 hspsassistant {
@@ -94,6 +98,10 @@ minecraft {
     }
 }
 
+repositories {
+	maven { url = "https://pkgs.dev.azure.com/djtheredstoner/DevAuth/_packaging/public/maven/v1" }
+}
+
 dependencies {
     // Specify the version of Minecraft to use, If this is any group other then 'net.minecraft' it is assumed
     // that the dep is a ForgeGradle 'patcher' dependency. And its patches will be applied.
@@ -117,7 +125,7 @@ dependencies {
     // For more info...
     // http://www.gradle.org/docs/current/userguide/artifact_dependencies_tutorial.html
     // http://www.gradle.org/docs/current/userguide/dependency_management.html
-
+	implementation("me.djtheredstoner:DevAuth-forge-latest:1.1.2")
 }
 
 // Example for how to get properties into the manifest for reading by the runtime..
