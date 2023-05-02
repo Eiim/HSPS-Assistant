@@ -1,9 +1,3 @@
-# This is the example mods.toml file. It contains the data relating to the loading mods.
-# There are several mandatory fields (#mandatory), and many more that are optional (#optional).
-# The overall format is standard TOML format, v0.5.0.
-# Note that there are a couple of TOML lists in this file.
-# Find more information on toml format here:  https://github.com/toml-lang/toml
-
 # The name of the mod loader type to load - for regular FML @Mod mods it should be javafml
 modLoader="javafml" #mandatory
 
@@ -19,7 +13,7 @@ issueTrackerURL="https://github.com/Eiim/HSPS-Assistant/issues" #optional
 modId="hspsassistant"
 displayName="HSPS Assistant"
 
-version="0.0.1" # mandatory.  {$file.jarVersion} copies the version number from the manifest specification, which is set in the build.gradle file.
+version="0.0.2" # mandatory.  {$file.jarVersion} copies the version number from the manifest specification, which is set in the build.gradle file.
 
 # A URL to query for updates for this mod. See the JSON update specification here:  https://mcforge.readthedocs.io/en/latest/gettingstarted/autoupdate/
 #   updateJSONURL="http://myurl.me/" #optional
