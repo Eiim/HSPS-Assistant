@@ -31,8 +31,8 @@ public class TestHud {
 		
 		boolean forwardDown = InputMappings.isKeyDown(mchandle, forward);
 		boolean leftDown = InputMappings.isKeyDown(mchandle, left);
-		boolean rightDown = InputMappings.isKeyDown(mchandle, right.getKeyCode());
-		boolean backDown = InputMappings.isKeyDown(mchandle, back.getKeyCode());
+		boolean rightDown = InputMappings.isKeyDown(mchandle, right);
+		boolean backDown = InputMappings.isKeyDown(mchandle, back);
 		
 		String inputStr = "";
 		inputStr += forwardDown ? "W" : " ";
