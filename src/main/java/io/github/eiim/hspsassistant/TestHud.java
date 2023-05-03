@@ -6,7 +6,9 @@ import org.apache.maven.artifact.versioning.ArtifactVersion;
 
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.FontRenderer;
-import net.minecraft.client.util.InputMappings;
+import net.minecraft.client.settings.KeyBinding;
+import net.minecraft.scoreboard.ScoreObjective;
+import net.minecraft.scoreboard.Scoreboard;
 import net.minecraftforge.client.event.RenderGameOverlayEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.ModList;
@@ -16,14 +18,13 @@ public class TestHud {
 	
 	private static Minecraft mc;
 	private static FontRenderer fr;
-	private static long mchandle;
 	
-	private static int forward;
-	private static int left;
-	private static int right;
-	private static int back;
-	private static int jump;
-	private static int sprint;
+	private static KeyBinding forward;
+	private static KeyBinding left;
+	private static KeyBinding right;
+	private static KeyBinding back;
+	private static KeyBinding jump;
+	private static KeyBinding sprint;
 	
 	//private static String mcVersion;
 	private static ArtifactVersion mcVersion;
@@ -35,32 +36,31 @@ public class TestHud {
 		fr.func_238405_a_(event.getMatrixStack(), "Lobby Map", 10, 20, 0xFFFFFF);
 		fr.func_238405_a_(event.getMatrixStack(), "All Checkpoints "+(isNew ? "1.13+" : "1.8-1.12"), 10, 30, 0xFFFFFF);
 		
-		boolean forwardDown = InputMappings.isKeyDown(mchandle, forward);
-		boolean leftDown = InputMappings.isKeyDown(mchandle, left);
-		boolean rightDown = InputMappings.isKeyDown(mchandle, right);
-		boolean backDown = InputMappings.isKeyDown(mchandle, back);
-		
 		String inputStr = "";
-		inputStr += forwardDown ? "W" : " ";
-		inputStr += leftDown ? "A" : " ";
-		inputStr += backDown ? "S" : " ";
-		inputStr += rightDown ? "D" : " ";
+		inputStr += forward.isKeyDown() ? "W" : " ";
+		inputStr += left.isKeyDown() ? "A" : " ";
+		inputStr += back.isKeyDown() ? "S" : " ";
+		inputStr += right.isKeyDown() ? "D" : " ";
 		
 		fr.func_238405_a_(event.getMatrixStack(), inputStr, 10, 40, 0xFFFFFF);
+		
+		Scoreboard sb = mc.world.getScoreboard();
+		ScoreObjective obj = sb.getObjectiveInDisplaySlot(1);
+		String lobby = obj.getDisplayName().getString();
+		fr.func_238405_a_(event.getMatrixStack(), lobby, 10, 50, 0xFFFFFF);
     }
 	
 	@SubscribeEvent
 	public static void onCommonSetupEvent(FMLCommonSetupEvent event) {
 		mc = Minecraft.getInstance();
 		fr = mc.fontRenderer;
-		mchandle = mc.getMainWindow().getHandle();
 		
-		forward = mc.gameSettings.keyBindForward.getKey().getKeyCode();
-		left = mc.gameSettings.keyBindLeft.getKey().getKeyCode();
-		right = mc.gameSettings.keyBindRight.getKey().getKeyCode();
-		back = mc.gameSettings.keyBindBack.getKey().getKeyCode();
-		jump = mc.gameSettings.keyBindJump.getKey().getKeyCode();
-		sprint = mc.gameSettings.keyBindSprint.getKey().getKeyCode();
+		forward = mc.gameSettings.keyBindForward;
+		left = mc.gameSettings.keyBindLeft;
+		right = mc.gameSettings.keyBindRight;
+		back = mc.gameSettings.keyBindBack;
+		jump = mc.gameSettings.keyBindJump;
+		sprint = mc.gameSettings.keyBindSprint;
 		
 		mcVersion = ModList.get().getModFileById("minecraft").getMods().get(0).getVersion();
 		isNew = mcVersion.getMinorVersion() > 12;
