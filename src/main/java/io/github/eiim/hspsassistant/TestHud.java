@@ -5,6 +5,8 @@ import org.apache.logging.log4j.Logger;
 import org.apache.maven.artifact.versioning.ArtifactVersion;
 import org.codehaus.plexus.util.StringUtils;
 
+import com.mojang.blaze3d.matrix.MatrixStack;
+
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.AbstractGui;
 import net.minecraft.client.gui.FontRenderer;
@@ -17,6 +19,8 @@ import net.minecraftforge.fml.ModList;
 import net.minecraftforge.fml.event.lifecycle.FMLCommonSetupEvent;
 
 public class TestHud {
+	
+	private static final Logger LOGGER = LogManager.getLogger();
 	
 	private static Minecraft mc;
 	private static FontRenderer fr;
@@ -55,37 +59,35 @@ public class TestHud {
 		
 		int width = mc.getMainWindow().getScaledWidth();
 		int sqSize = 20;
-		int lineWidth = 2;
-		int spacing = 4;
+		int lineWidth = 1;
+		int spacing = 3;
 		
 		// Draw backgrounds
-		if(forward.isKeyDown()) {
-			int x = width - 2*sqSize - 2*spacing;
-			int y = spacing;
-			AbstractGui.func_238467_a_(event.getMatrixStack(), x, y, x+sqSize, y+sqSize, 0x88FFFFFF);
-		}
-		if(left.isKeyDown()) {
-			int x = width - 3*sqSize - 3*spacing;
-			int y = 2*spacing + sqSize;
-			AbstractGui.func_238467_a_(event.getMatrixStack(), x, y, x+sqSize, y+sqSize, 0x88FFFFFF);
-		}
-		if(back.isKeyDown()) {
-			int x = width - 2*sqSize - 2*spacing;
-			int y = 2*spacing + sqSize;
-			AbstractGui.func_238467_a_(event.getMatrixStack(), x, y, x+sqSize, y+sqSize, 0x88FFFFFF);
-		}
-		if(right.isKeyDown()) {
-			int x = width - sqSize - spacing;
-			int y = 2*spacing + sqSize;
-			AbstractGui.func_238467_a_(event.getMatrixStack(), x, y, x+sqSize, y+sqSize, 0x88FFFFFF);
-		}
 		
-		if(jump.isKeyDown()) {
-			int x = width - 3*sqSize - 3*spacing;
-			int y = 3*spacing + 2*sqSize;
-			int height = sqSize/2;
-			AbstractGui.func_238467_a_(event.getMatrixStack(), x, y, width-spacing, y+height, 0x88FFFFFF);
-		}
+		int x = width - 2*sqSize - 2*spacing;
+		int y = spacing;
+		int fill = forward.isKeyDown() ? 0x88FFFFFF : 0;
+		drawRect(event.getMatrixStack(), x, y, sqSize, sqSize, lineWidth, fill, 0xFFFFFFFF);
+		
+		x = width - 3*sqSize - 3*spacing;
+		y = 2*spacing + sqSize;
+		fill = left.isKeyDown() ? 0x88FFFFFF : 0;
+		drawRect(event.getMatrixStack(), x, y, sqSize, sqSize, lineWidth, fill, 0xFFFFFFFF);
+		
+		x = width - 2*sqSize - 2*spacing;
+		y = 2*spacing + sqSize;
+		fill = back.isKeyDown() ? 0x88FFFFFF : 0;
+		drawRect(event.getMatrixStack(), x, y, sqSize, sqSize, lineWidth, fill, 0xFFFFFFFF);
+		
+		x = width - sqSize - spacing;
+		y = 2*spacing + sqSize;
+		fill = right.isKeyDown() ? 0x88FFFFFF : 0;
+		drawRect(event.getMatrixStack(), x, y, sqSize, sqSize, lineWidth, fill, 0xFFFFFFFF);
+		
+		x = width - 3*sqSize - 3*spacing;
+		y = 3*spacing + 2*sqSize;
+		fill = jump.isKeyDown() ? 0x88FFFFFF : 0;
+		drawRect(event.getMatrixStack(), x, y, width-spacing-x, sqSize/2, lineWidth, fill, 0xFFFFFFFF);
     }
 	
 	@SubscribeEvent
@@ -104,5 +106,16 @@ public class TestHud {
 		isNew = mcVersion.getMinorVersion() > 12;
 	}
 	
-	private static final Logger LOGGER = LogManager.getLogger();
+	private static void drawRect(MatrixStack ms, int x, int y, int width, int height, int lineWidth, int fill, int border) {
+		// Fill
+		AbstractGui.func_238467_a_(ms, x, y, x+width, y+height, fill);
+		
+		// Border
+		int offsetIn = (int)Math.ceil(lineWidth/2.0);
+		int offsetOut = (int)Math.floor(lineWidth/2.0);
+		AbstractGui.func_238467_a_(ms, x-offsetOut, y-offsetOut, x+offsetIn, y+height+offsetOut, border); // Left
+		AbstractGui.func_238467_a_(ms, x+width-offsetIn, y-offsetOut, x+width+offsetOut, y+height+offsetOut, border); // Right
+		AbstractGui.func_238467_a_(ms, x+offsetIn, y-offsetOut, x+width-offsetIn, y+offsetIn, border); // Top
+		AbstractGui.func_238467_a_(ms, x+offsetIn, y+height-offsetIn, x+width-offsetIn, y+height+offsetOut, border); // Bottom
+	}
 }
