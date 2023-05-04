@@ -6,6 +6,7 @@ import org.apache.maven.artifact.versioning.ArtifactVersion;
 import org.codehaus.plexus.util.StringUtils;
 
 import net.minecraft.client.Minecraft;
+import net.minecraft.client.gui.AbstractGui;
 import net.minecraft.client.gui.FontRenderer;
 import net.minecraft.client.settings.KeyBinding;
 import net.minecraft.scoreboard.ScoreObjective;
@@ -27,22 +28,11 @@ public class TestHud {
 	private static KeyBinding jump;
 	private static KeyBinding sprint;
 	
-	//private static String mcVersion;
 	private static ArtifactVersion mcVersion;
 	private static boolean isNew;
 	
 	@SubscribeEvent
     public void onRender(RenderGameOverlayEvent.Text event) {
-		fr.func_238405_a_(event.getMatrixStack(), "Hypixel Server Parkour", 10, 10, 0xFFFFFF);
-		fr.func_238405_a_(event.getMatrixStack(), "All Checkpoints "+(isNew ? "1.13+" : "1.8-1.12"), 10, 30, 0xFFFFFF);
-		
-		String inputStr = "";
-		inputStr += forward.isKeyDown() ? "W" : " ";
-		inputStr += left.isKeyDown() ? "A" : " ";
-		inputStr += back.isKeyDown() ? "S" : " ";
-		inputStr += right.isKeyDown() ? "D" : " ";
-		
-		fr.func_238405_a_(event.getMatrixStack(), inputStr, 10, 40, 0xFFFFFF);
 		
 		Scoreboard sb = mc.world.getScoreboard();
 		ScoreObjective obj = sb.getObjectiveInDisplaySlot(1);
@@ -54,8 +44,48 @@ public class TestHud {
 			lobby = "Main Lobby";
 		} else {
 			lobby = StringUtils.capitaliseAllWords(lobby.toLowerCase());
+		}		
+		if(obj != null) {
+			fr.func_238405_a_(event.getMatrixStack(), "Hypixel Server Parkour", 10, 10, 0xFFFFFF);
+			fr.func_238405_a_(event.getMatrixStack(), lobby, 10, 20, 0xFFFFFF);
+			fr.func_238405_a_(event.getMatrixStack(), "All Checkpoints "+(isNew ? "1.13+" : "1.8-1.12"), 10, 30, 0xFFFFFF);
 		}
-		fr.func_238405_a_(event.getMatrixStack(), lobby, 10, 20, 0xFFFFFF);
+		
+		// Key indicators
+		
+		int width = mc.getMainWindow().getScaledWidth();
+		int sqSize = 20;
+		int lineWidth = 2;
+		int spacing = 4;
+		
+		// Draw backgrounds
+		if(forward.isKeyDown()) {
+			int x = width - 2*sqSize - 2*spacing;
+			int y = spacing;
+			AbstractGui.func_238467_a_(event.getMatrixStack(), x, y, x+sqSize, y+sqSize, 0x88FFFFFF);
+		}
+		if(left.isKeyDown()) {
+			int x = width - 3*sqSize - 3*spacing;
+			int y = 2*spacing + sqSize;
+			AbstractGui.func_238467_a_(event.getMatrixStack(), x, y, x+sqSize, y+sqSize, 0x88FFFFFF);
+		}
+		if(back.isKeyDown()) {
+			int x = width - 2*sqSize - 2*spacing;
+			int y = 2*spacing + sqSize;
+			AbstractGui.func_238467_a_(event.getMatrixStack(), x, y, x+sqSize, y+sqSize, 0x88FFFFFF);
+		}
+		if(right.isKeyDown()) {
+			int x = width - sqSize - spacing;
+			int y = 2*spacing + sqSize;
+			AbstractGui.func_238467_a_(event.getMatrixStack(), x, y, x+sqSize, y+sqSize, 0x88FFFFFF);
+		}
+		
+		if(jump.isKeyDown()) {
+			int x = width - 3*sqSize - 3*spacing;
+			int y = 3*spacing + 2*sqSize;
+			int height = sqSize/2;
+			AbstractGui.func_238467_a_(event.getMatrixStack(), x, y, width-spacing, y+height, 0x88FFFFFF);
+		}
     }
 	
 	@SubscribeEvent
