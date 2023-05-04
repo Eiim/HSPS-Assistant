@@ -3,6 +3,7 @@ package io.github.eiim.hspsassistant;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.apache.maven.artifact.versioning.ArtifactVersion;
+import org.codehaus.plexus.util.StringUtils;
 
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.FontRenderer;
@@ -33,7 +34,6 @@ public class TestHud {
 	@SubscribeEvent
     public void onRender(RenderGameOverlayEvent.Text event) {
 		fr.func_238405_a_(event.getMatrixStack(), "Hypixel Server Parkour", 10, 10, 0xFFFFFF);
-		fr.func_238405_a_(event.getMatrixStack(), "Lobby Map", 10, 20, 0xFFFFFF);
 		fr.func_238405_a_(event.getMatrixStack(), "All Checkpoints "+(isNew ? "1.13+" : "1.8-1.12"), 10, 30, 0xFFFFFF);
 		
 		String inputStr = "";
@@ -46,8 +46,16 @@ public class TestHud {
 		
 		Scoreboard sb = mc.world.getScoreboard();
 		ScoreObjective obj = sb.getObjectiveInDisplaySlot(1);
-		String lobby = obj.getDisplayName().getString();
-		fr.func_238405_a_(event.getMatrixStack(), lobby, 10, 50, 0xFFFFFF);
+		String lobby = "";
+		if(obj != null) {
+			lobby = obj.getDisplayName().getString();
+		}
+		if("HYPIXEL".equals(lobby)) {
+			lobby = "Main Lobby";
+		} else {
+			lobby = StringUtils.capitaliseAllWords(lobby.toLowerCase());
+		}
+		fr.func_238405_a_(event.getMatrixStack(), lobby, 10, 20, 0xFFFFFF);
     }
 	
 	@SubscribeEvent

@@ -28,5 +28,6 @@ public class HSPSAssistant {
 	  MinecraftForge.EVENT_BUS.register(new TestHud());
 	  MinecraftForge.EVENT_BUS.register(new TestChat());
 	  MOD_EVENT_BUS.register(TestHud.class);
+	  MOD_EVENT_BUS.register(TestChat.class);
   }
 }

@@ -12,7 +12,6 @@ import net.minecraftforge.client.event.ClientChatReceivedEvent;
 import net.minecraftforge.client.event.ClientPlayerNetworkEvent.LoggedInEvent;
 import net.minecraftforge.client.event.ClientPlayerNetworkEvent.LoggedOutEvent;
 import net.minecraftforge.client.event.ClientPlayerNetworkEvent.RespawnEvent;
-import net.minecraftforge.event.world.WorldEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 
 public class TestChat {
@@ -102,23 +101,18 @@ public class TestChat {
     }
 	
 	@SubscribeEvent
-	public static void onLogin(LoggedInEvent event) {
+	public void onLogin(LoggedInEvent event) {
 		LOGGER.debug("Logged in event: "+event.getResult());
 	}
 	
 	@SubscribeEvent
-	public static void onRespawn(RespawnEvent event) {
+	public void onRespawn(RespawnEvent event) {
 		LOGGER.debug("Respawn event: "+event.getResult());
 	}
 	
 	@SubscribeEvent
-	public static void onLogout(LoggedOutEvent event) {
+	public void onLogout(LoggedOutEvent event) {
 		LOGGER.debug("Logged out event: "+event.getResult());
-	}
-	
-	@SubscribeEvent
-	public static void onLoad(WorldEvent.Load event) {
-		LOGGER.debug("World load event: "+event.getResult());
 	}
 	
 	private static final Logger LOGGER = LogManager.getLogger();
