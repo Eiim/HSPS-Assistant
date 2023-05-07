@@ -6,12 +6,10 @@ import java.util.regex.Pattern;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-import net.minecraft.util.text.ITextComponent;
+import net.minecraft.network.chat.Component;
 import net.minecraftforge.client.event.ClientChatEvent;
 import net.minecraftforge.client.event.ClientChatReceivedEvent;
-import net.minecraftforge.client.event.ClientPlayerNetworkEvent.LoggedInEvent;
-import net.minecraftforge.client.event.ClientPlayerNetworkEvent.LoggedOutEvent;
-import net.minecraftforge.client.event.ClientPlayerNetworkEvent.RespawnEvent;
+import net.minecraftforge.client.event.ClientPlayerNetworkEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 
 public class TestChat {
@@ -26,7 +24,7 @@ public class TestChat {
 	
 	@SubscribeEvent
     public void onChatGet(ClientChatReceivedEvent event) {
-		ITextComponent message = event.getMessage();
+		Component message = event.getMessage();
 		String text = flattenMessage(message);
 		
 		try {
@@ -101,26 +99,26 @@ public class TestChat {
     }
 	
 	@SubscribeEvent
-	public void onLogin(LoggedInEvent event) {
+	public void onLogin(ClientPlayerNetworkEvent.LoggingIn event) {
 		LOGGER.debug("Logged in event: "+event.getResult());
 	}
 	
 	@SubscribeEvent
-	public void onRespawn(RespawnEvent event) {
+	public void onRespawn(ClientPlayerNetworkEvent.Clone event) {
 		LOGGER.debug("Respawn event: "+event.getResult());
 	}
 	
 	@SubscribeEvent
-	public void onLogout(LoggedOutEvent event) {
+	public void onLogout(ClientPlayerNetworkEvent.LoggingOut event) {
 		LOGGER.debug("Logged out event: "+event.getResult());
 	}
 	
 	private static final Logger LOGGER = LogManager.getLogger();
 	
 	// Should never nest more than a few times, so should be fine
-	private static String flattenMessage(ITextComponent message) {
-		String text = message.getUnformattedComponentText();
-		for(ITextComponent m : message.getSiblings()) {
+	private static String flattenMessage(Component message) {
+		String text = message.getString();
+		for(Component m : message.getSiblings()) {
 			text += flattenMessage(m);
 		}
 		return text;
