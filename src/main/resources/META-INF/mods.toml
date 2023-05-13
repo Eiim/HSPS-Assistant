@@ -13,7 +13,7 @@ issueTrackerURL="https://github.com/Eiim/HSPS-Assistant/issues" #optional
 modId="hspsassistant"
 displayName="HSPS Assistant"
 
-version="0.0.3" # mandatory.  {$file.jarVersion} copies the version number from the manifest specification, which is set in the build.gradle file.
+version="0.0.4" # mandatory.  {$file.jarVersion} copies the version number from the manifest specification, which is set in the build.gradle file.
 
 # A URL to query for updates for this mod. See the JSON update specification here:  https://mcforge.readthedocs.io/en/latest/gettingstarted/autoupdate/
 #   updateJSONURL="http://myurl.me/" #optional

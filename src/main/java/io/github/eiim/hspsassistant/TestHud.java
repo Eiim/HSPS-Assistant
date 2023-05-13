@@ -13,11 +13,14 @@ import net.minecraft.client.gui.Font;
 import net.minecraft.client.gui.GuiComponent;
 import net.minecraft.world.scores.Objective;
 import net.minecraft.world.scores.Scoreboard;
+import net.minecraftforge.api.distmarker.Dist;
+import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.client.event.RenderGuiEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.ModList;
 import net.minecraftforge.fml.event.lifecycle.FMLCommonSetupEvent;
 
+@OnlyIn(Dist.CLIENT)
 public class TestHud {
 	
 	private static final Logger LOGGER = LogManager.getLogger();
@@ -35,24 +38,26 @@ public class TestHud {
 	private static ArtifactVersion mcVersion;
 	private static boolean isNew;
 	
+	public static String category;
+	
 	@SubscribeEvent
     public void onRender(RenderGuiEvent event) {
 		
 		Scoreboard sb = mc.level.getScoreboard();
 		Objective obj = sb.getDisplayObjective(1);
 		String lobby = "";
-		if(obj != null) {
+		if(obj != null) { // Only draw Hypixel overlays if we're on Hypixel or at least something with a scoreboard
 			lobby = obj.getDisplayName().getString();
-		}
-		if("HYPIXEL".equals(lobby)) {
-			lobby = "Main Lobby";
-		} else {
-			lobby = StringUtils.capitaliseAllWords(lobby.toLowerCase());
-		}		
-		if(obj != null) {
+			
+			if("HYPIXEL".equals(lobby)) {
+				lobby = "Main Lobby";
+			} else {
+				lobby = StringUtils.capitaliseAllWords(lobby.toLowerCase());
+			}
+			
 			ft.drawShadow(event.getPoseStack(), "Hypixel Server Parkour", 10, 10, 0xFFFFFF);
 			ft.drawShadow(event.getPoseStack(), lobby, 10, 20, 0xFFFFFF);
-			ft.drawShadow(event.getPoseStack(), "All Checkpoints "+(isNew ? "1.13+" : "1.8-1.12"), 10, 30, 0xFFFFFF);
+			ft.drawShadow(event.getPoseStack(), category+" "+(isNew ? "1.13+" : "1.8-1.12"), 10, 30, 0xFFFFFF);
 		}
 		
 		// Key indicators
@@ -102,6 +107,8 @@ public class TestHud {
 		
 		mcVersion = ModList.get().getModFileById("minecraft").getMods().get(0).getVersion();
 		isNew = mcVersion.getMinorVersion() > 12;
+		
+		category = "All Checkpoints";
 	}
 	
 	private static void drawRect(PoseStack ps, int x, int y, int width, int height, int lineWidth, int fill, int border) {

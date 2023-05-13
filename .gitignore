@@ -27,3 +27,6 @@ forge*changelog.txt
 
 # Custom folder to hide
 1.8
+
+# Ignore furher custom setup changes
+gradle.properties
