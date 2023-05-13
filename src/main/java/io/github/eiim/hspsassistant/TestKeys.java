@@ -19,7 +19,7 @@ public class TestKeys {
 	
 	private static final Logger LOGGER = LogManager.getLogger();
 	
-	public static final KeyMapping categoryMapping = new KeyMapping("key.hsps.category", InputConstants.Type.KEYSYM, GLFW.GLFW_KEY_C, "key.categories.misc");
+	public static final KeyMapping categoryMapping = new KeyMapping("key.hsps.category", InputConstants.Type.KEYSYM, GLFW.GLFW_KEY_C, "key.categories.hsps");
 
 	@SubscribeEvent
 	public static void registerMappings(RegisterKeyMappingsEvent event) {
