@@ -73,6 +73,12 @@ public class TestHud {
 		drawRect(event.getPoseStack(), x, y, sqSize, sqSize, lineWidth, fill, 0xFFFFFFFF);
 		
 		x = width - 3*sqSize - 3*spacing;
+		y = spacing;
+		fill = sprint.isDown() ? 0x88FFFFFF : 0;
+		drawRect(event.getPoseStack(), x, y, sqSize, sqSize, lineWidth, fill, 0xFFFFFFFF);
+		// TODO: Add ctrl/"helm" icon
+		
+		x = width - 3*sqSize - 3*spacing;
 		y = 2*spacing + sqSize;
 		fill = left.isDown() ? 0x88FFFFFF : 0;
 		drawRect(event.getPoseStack(), x, y, sqSize, sqSize, lineWidth, fill, 0xFFFFFFFF);
