@@ -11,14 +11,15 @@ import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.client.event.ClientChatEvent;
 import net.minecraftforge.client.event.ClientChatReceivedEvent;
-import net.minecraftforge.client.event.ClientPlayerNetworkEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 
 @OnlyIn(Dist.CLIENT)
-public class TestChat {
+public class ChatListener {
 	
 	public static final Pattern CP_NUM_REGEX = Pattern.compile("Checkpoint #(\\d+)");
 	public static final Pattern TIMER_REGEX = Pattern.compile("\\d\\d:\\d\\d\\.\\d\\d\\d");
+	
+	private static final Logger LOGGER = LogManager.getLogger();
 	
 	@SubscribeEvent
     public void onChatSend(ClientChatEvent event) {
@@ -101,24 +102,7 @@ public class TestChat {
 		}
     }
 	
-	@SubscribeEvent
-	public void onLogin(ClientPlayerNetworkEvent.LoggingIn event) {
-		LOGGER.debug("Logged in event: "+event.getResult());
-	}
-	
-	@SubscribeEvent
-	public void onRespawn(ClientPlayerNetworkEvent.Clone event) {
-		LOGGER.debug("Respawn event: "+event.getResult());
-	}
-	
-	@SubscribeEvent
-	public void onLogout(ClientPlayerNetworkEvent.LoggingOut event) {
-		LOGGER.debug("Logged out event: "+event.getResult());
-	}
-	
-	private static final Logger LOGGER = LogManager.getLogger();
-	
-	// Should never nest more than a few times, so should be fine
+	// Should never nest more than a few times, so recursion should be fine
 	private static String flattenMessage(Component message) {
 		String text = message.getString();
 		for(Component m : message.getSiblings()) {

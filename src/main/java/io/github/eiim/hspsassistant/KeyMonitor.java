@@ -7,6 +7,7 @@ import org.lwjgl.glfw.GLFW;
 import com.mojang.blaze3d.platform.InputConstants;
 
 import net.minecraft.client.KeyMapping;
+import net.minecraft.client.Minecraft;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.client.event.RegisterKeyMappingsEvent;
@@ -15,9 +16,18 @@ import net.minecraftforge.event.TickEvent.ClientTickEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 
 @OnlyIn(Dist.CLIENT)
-public class TestKeys {
+public class KeyMonitor {
 	
 	private static final Logger LOGGER = LogManager.getLogger();
+	
+	private static Minecraft mc = Minecraft.getInstance();
+	
+	public static KeyMapping forward = mc.options.keyUp;
+	public static KeyMapping left = mc.options.keyLeft;
+	public static KeyMapping right = mc.options.keyRight;
+	public static KeyMapping back = mc.options.keyDown;
+	public static KeyMapping jump = mc.options.keyJump;
+	public static KeyMapping sprint = mc.options.keySprint;
 	
 	public static final KeyMapping categoryMapping = new KeyMapping("key.hsps.category", InputConstants.Type.KEYSYM, GLFW.GLFW_KEY_C, "key.categories.hsps");
 
@@ -32,18 +42,18 @@ public class TestKeys {
 		if (event.phase == TickEvent.Phase.END) { // Only call code once as the tick event is called twice every tick
 			while (categoryMapping.consumeClick()) {
 				LOGGER.debug("Category switched!");
-				switch(TestHud.category) {
+				switch(RenderUpdater.category) {
 					case "All Checkpoints":
-						TestHud.category = "Any%";
+						RenderUpdater.category = "Any%";
 						break;
 					case "Any%":
-						TestHud.category = "Seasonal%";
+						RenderUpdater.category = "Seasonal%";
 						break;
 					case "Seasonal%":
-						TestHud.category = "All Checkpoints";
+						RenderUpdater.category = "All Checkpoints";
 						break;
 					default:
-						TestHud.category = "Any%";
+						RenderUpdater.category = "Any%";
 				}
 		    }
 		}
