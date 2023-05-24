@@ -5,6 +5,7 @@ import org.apache.logging.log4j.Logger;
 import org.apache.maven.artifact.versioning.ArtifactVersion;
 import org.codehaus.plexus.util.StringUtils;
 
+import io.github.eiim.hspsassistant.GraphicsHelper.ColorSettings;
 import net.minecraft.client.Minecraft;
 import net.minecraft.world.scores.Objective;
 import net.minecraft.world.scores.Scoreboard;
@@ -27,6 +28,12 @@ public class RenderUpdater {
 	
 	public static String category = "All Checkpoints";
 	
+	private static final int WHITE = 0xFFFFFFFF;
+	private static final int TRANS_WHITE = 0x88FFFFFF;
+	private static final int TRANS_BLACK = 0x44000000;
+	private static final int CLEAR = 0x00000000;
+	private static final String title = "Hypixel Server Parkour";
+	
 	@SubscribeEvent
     public void onRender(RenderGuiEvent event) {
 		
@@ -42,9 +49,19 @@ public class RenderUpdater {
 				lobby = StringUtils.capitaliseAllWords(lobby.toLowerCase());
 			}
 			
-			GraphicsHelper.drawTextShadow(event.getPoseStack(), "Hypixel Server Parkour", 10, 10, 0xFFFFFF);
-			GraphicsHelper.drawTextShadow(event.getPoseStack(), lobby, 10, 20, 0xFFFFFF);
-			GraphicsHelper.drawTextShadow(event.getPoseStack(), category+" "+(isNew ? "1.13+" : "1.8-1.12"), 10, 30, 0xFFFFFF);
+			int screenBorder = 3;
+			int padding = 3;
+			String catString = category+" "+(isNew ? "1.13+" : "1.8-1.12");
+			int titleWidth = GraphicsHelper.getTextWidth(title);
+			int lobbyWidth = GraphicsHelper.getTextWidth(lobby);
+			int catWidth = GraphicsHelper.getTextWidth(catString);
+			int maxWidth = Math.max(titleWidth, Math.max(catWidth, lobbyWidth));
+			int lineWidth = 1;
+			ColorSettings tlcs = new ColorSettings(WHITE, TRANS_BLACK, WHITE);
+			
+			GraphicsHelper.drawRectTextBordered(event.getPoseStack(), screenBorder, screenBorder, maxWidth + 2*padding, 7 + 2*padding, title, lineWidth, tlcs);
+			GraphicsHelper.drawRectTextBordered(event.getPoseStack(), screenBorder, screenBorder + 6 + 2*padding, maxWidth + 2*padding, 7 + 2*padding, lobby, lineWidth, tlcs);
+			GraphicsHelper.drawRectTextBordered(event.getPoseStack(), screenBorder, screenBorder + 12 + 4*padding, maxWidth + 2*padding, 7 + 2*padding, catString, lineWidth, tlcs);
 		}
 		
 		// Key indicators
@@ -53,37 +70,33 @@ public class RenderUpdater {
 		int sqSize = 20;
 		int lineWidth = 1;
 		int spacing = 3;
+		ColorSettings pressed = new ColorSettings(WHITE, TRANS_WHITE, WHITE);
+		ColorSettings unpressed = new ColorSettings(WHITE, CLEAR, WHITE);
 		
 		int x = width - 2*sqSize - 2*spacing;
 		int y = spacing;
-		int fill = KeyMonitor.forward.isDown() ? 0x88FFFFFF : 0;
-		GraphicsHelper.drawRect(event.getPoseStack(), x, y, sqSize, sqSize, lineWidth, fill, 0xFFFFFFFF);
+		GraphicsHelper.drawRectBordered(event.getPoseStack(), x, y, sqSize, sqSize, lineWidth, KeyMonitor.forward.isDown() ? pressed : unpressed);
 		
 		x = width - 3*sqSize - 3*spacing;
 		y = spacing;
-		fill = KeyMonitor.sprint.isDown() ? 0x88FFFFFF : 0;
-		GraphicsHelper.drawRect(event.getPoseStack(), x, y, sqSize, sqSize, lineWidth, fill, 0xFFFFFFFF);
+		GraphicsHelper.drawRectBordered(event.getPoseStack(), x, y, sqSize, sqSize, lineWidth, KeyMonitor.sprint.isDown() ? pressed : unpressed);
 		// TODO: Add ctrl/"helm" icon
 		
 		x = width - 3*sqSize - 3*spacing;
 		y = 2*spacing + sqSize;
-		fill = KeyMonitor.left.isDown() ? 0x88FFFFFF : 0;
-		GraphicsHelper.drawRect(event.getPoseStack(), x, y, sqSize, sqSize, lineWidth, fill, 0xFFFFFFFF);
+		GraphicsHelper.drawRectBordered(event.getPoseStack(), x, y, sqSize, sqSize, lineWidth, KeyMonitor.left.isDown() ? pressed : unpressed);
 		
 		x = width - 2*sqSize - 2*spacing;
 		y = 2*spacing + sqSize;
-		fill = KeyMonitor.back.isDown() ? 0x88FFFFFF : 0;
-		GraphicsHelper.drawRect(event.getPoseStack(), x, y, sqSize, sqSize, lineWidth, fill, 0xFFFFFFFF);
+		GraphicsHelper.drawRectBordered(event.getPoseStack(), x, y, sqSize, sqSize, lineWidth, KeyMonitor.back.isDown() ? pressed : unpressed);
 		
 		x = width - sqSize - spacing;
 		y = 2*spacing + sqSize;
-		fill = KeyMonitor.right.isDown() ? 0x88FFFFFF : 0;
-		GraphicsHelper.drawRect(event.getPoseStack(), x, y, sqSize, sqSize, lineWidth, fill, 0xFFFFFFFF);
+		GraphicsHelper.drawRectBordered(event.getPoseStack(), x, y, sqSize, sqSize, lineWidth, KeyMonitor.right.isDown() ? pressed : unpressed);
 		
 		x = width - 3*sqSize - 3*spacing;
 		y = 3*spacing + 2*sqSize;
-		fill = KeyMonitor.jump.isDown() ? 0x88FFFFFF : 0;
-		GraphicsHelper.drawRect(event.getPoseStack(), x, y, width-spacing-x, sqSize/2, lineWidth, fill, 0xFFFFFFFF);
+		GraphicsHelper.drawRectBordered(event.getPoseStack(), x, y, width-spacing-x, sqSize/2, lineWidth, KeyMonitor.jump.isDown() ? pressed : unpressed);
     }
 	
 	@SubscribeEvent
