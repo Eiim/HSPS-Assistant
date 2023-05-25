@@ -1,8 +1,9 @@
 package io.github.eiim.hspsassistant;
 
 import java.util.ArrayList;
-import java.util.Collection;
+import java.util.Arrays;
 import java.util.List;
+import java.util.Objects;
 
 import com.google.gson.Gson;
 import com.google.gson.annotations.SerializedName;
@@ -12,7 +13,7 @@ public class Categories {
 	
 	private static Categories CATEGORIES = null;
 
-	public Collection<Lobby> lobbies;
+	public List<Lobby> lobbies;
 	
 	private Categories() {
 		lobbies = new ArrayList<Lobby>();
@@ -37,10 +38,21 @@ public class Categories {
 	
 	public static class Lobby {
 		public String name;
-		public Collection<String> aliases;
+		public List<String> aliases;
 		public int checkpoints;
-		public Collection<Category> categories;
+		public List<Category> categories;
 		Lobby(){}
+		
+		@java.lang.Override
+		public boolean equals(Object obj) {
+			if (this == obj)
+				return true;
+			if (!(obj instanceof Lobby))
+				return false;
+			Lobby other = (Lobby) obj;
+			return Objects.equals(aliases, other.aliases) && Objects.equals(categories, other.categories)
+					&& checkpoints == other.checkpoints && Objects.equals(name, other.name);
+		}
 	}
 	
 	public static class Category {
@@ -49,6 +61,18 @@ public class Categories {
 		public List<Variable> variables; // Needs to be ordered for checkpointOverrides
 		public List<Override> checkpointOverrides; // Needs to be ordered for determinism
 		Category(){}
+		
+		@java.lang.Override
+		public boolean equals(Object obj) {
+			if (this == obj)
+				return true;
+			if (!(obj instanceof Category))
+				return false;
+			Category other = (Category) obj;
+			return Objects.equals(checkpointOverrides, other.checkpointOverrides)
+					&& Arrays.equals(checkpoints, other.checkpoints) && Objects.equals(name, other.name)
+					&& Objects.equals(variables, other.variables);
+		}
 	}
 	
 	public static class Variable {
@@ -62,6 +86,16 @@ public class Categories {
 			@SerializedName("route") ROUTE,
 			@SerializedName("custom") CUSTOM
 		}
+		
+		@java.lang.Override
+		public boolean equals(Object obj) {
+			if (this == obj)
+				return true;
+			if (!(obj instanceof Variable))
+				return false;
+			Variable other = (Variable) obj;
+			return Arrays.equals(options, other.options) && type == other.type;
+		}
 	}
 	
 	public static class Override {
@@ -69,6 +103,7 @@ public class Categories {
 		public int[] checkpoints;
 		Override(){}
 		
+		// Check if options match
 		public boolean matches(String[] options) {
 			if(this.options.length != options.length) {
 				return false;
@@ -80,6 +115,26 @@ public class Categories {
 			}
 			return true;
 		}
+		
+		@java.lang.Override
+		public boolean equals(Object obj) {
+			if (this == obj)
+				return true;
+			if (!(obj instanceof Override))
+				return false;
+			Override other = (Override) obj;
+			return Arrays.equals(checkpoints, other.checkpoints) && Arrays.equals(options, other.options);
+		}
+	}
+	
+	@java.lang.Override
+	public boolean equals(Object obj) {
+		if (this == obj)
+			return true;
+		if (!(obj instanceof Categories))
+			return false;
+		Categories other = (Categories) obj;
+		return Objects.equals(lobbies, other.lobbies);
 	}
 	
 }
