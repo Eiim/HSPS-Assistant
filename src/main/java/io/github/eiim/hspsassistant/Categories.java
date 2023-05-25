@@ -1,6 +1,5 @@
 package io.github.eiim.hspsassistant;
 
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Objects;
@@ -8,28 +7,14 @@ import java.util.Objects;
 import com.google.gson.Gson;
 import com.google.gson.annotations.SerializedName;
 
-// Singleton class containing categories.json config data
+// Contains categories.json config data
 public class Categories {
-	
-	private static Categories CATEGORIES = null;
 
 	public List<Lobby> lobbies;
 	
-	private Categories() {
-		lobbies = new ArrayList<Lobby>();
-	}
-	
-	public static synchronized Categories getCategories() {
-		if(CATEGORIES == null) {
-			CATEGORIES = new Categories();
-		}
-		return CATEGORIES;
-	}
-	
 	public static Categories fromJSON(String jsonText) {
 		Gson gson = new Gson();
-		CATEGORIES = gson.fromJson(jsonText, Categories.class);
-		return CATEGORIES;
+		return gson.fromJson(jsonText, Categories.class);
 	}
 	
 	public String toJSON() {
