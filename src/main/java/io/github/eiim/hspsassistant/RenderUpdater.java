@@ -3,7 +3,6 @@ package io.github.eiim.hspsassistant;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.apache.maven.artifact.versioning.ArtifactVersion;
-import org.codehaus.plexus.util.StringUtils;
 
 import io.github.eiim.hspsassistant.GraphicsHelper.ColorSettings;
 import net.minecraft.client.Minecraft;
@@ -43,10 +42,9 @@ public class RenderUpdater {
 		if(obj != null) { // Only draw Hypixel overlays if we're on Hypixel or at least something with a scoreboard
 			lobby = obj.getDisplayName().getString();
 			
+			// We'll need to normalize to the config value later
 			if("HYPIXEL".equals(lobby)) {
 				lobby = "Main Lobby";
-			} else {
-				lobby = StringUtils.capitaliseAllWords(lobby.toLowerCase());
 			}
 			
 			int screenBorder = 3;

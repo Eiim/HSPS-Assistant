@@ -31,5 +31,6 @@ public class HSPSAssistant {
 	  MOD_EVENT_BUS.register(ChatListener.class);
 	  MinecraftForge.EVENT_BUS.register(new KeyMonitor());
 	  MOD_EVENT_BUS.register(KeyMonitor.class);
+	  MOD_EVENT_BUS.register(SettingsLoader.class);
   }
 }

@@ -13,7 +13,7 @@ issueTrackerURL="https://github.com/Eiim/HSPS-Assistant/issues" #optional
 modId="hspsassistant"
 displayName="HSPS Assistant"
 
-version="0.1.0" # mandatory.  {$file.jarVersion} copies the version number from the manifest specification, which is set in the build.gradle file.
+version="0.1.1" # mandatory.  {$file.jarVersion} copies the version number from the manifest specification, which is set in the build.gradle file.
 
 # A URL to query for updates for this mod. See the JSON update specification here:  https://mcforge.readthedocs.io/en/latest/gettingstarted/autoupdate/
 #   updateJSONURL="http://myurl.me/" #optional
@@ -27,6 +27,8 @@ authors="Eiim"
 
 description='''
 Hypixel Server Parkour Speedrun Assistant: Assorted useful tools for HSP speedrunners'''
+
+displayTest="IGNORE_ALL_VERSION"
 
 # The lines below are not used for MBE but maybe you might want them
 # A dependency - use the . to indicate dependency for a specific modid. Dependencies are optional.

@@ -26,9 +26,10 @@ public class Categories {
 		return CATEGORIES;
 	}
 	
-	public static void fromJSON(String jsonText) {
+	public static Categories fromJSON(String jsonText) {
 		Gson gson = new Gson();
 		CATEGORIES = gson.fromJson(jsonText, Categories.class);
+		return CATEGORIES;
 	}
 	
 	public String toJSON() {
