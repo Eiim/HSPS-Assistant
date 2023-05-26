@@ -62,31 +62,6 @@
 			]
 		},
 		{
-			"name": "Cops & Crims",
-			"aliases": ["COPS AND CRIMS"],
-			"checkpoints": 4,
-			"categories": [
-				{
-					"name": "Any%",
-					"checkpoints": [1, 2]
-				},
-				{
-					"name": "All Checkpoints",
-					"checkpoints": [1, 2, 3, 4]
-				},
-				{
-					"name": "Shortcutless%",
-					"checkpoints": [1, 2, 3, 4],
-					"variables": [
-						{
-							"type": "speed",
-							"options": ["No Speed", "Speed 1", "Speed 2"]
-						}
-					]
-				}
-			]
-		},
-		{
 			"name": "Wool Wars",
 			"checkpoints": 4,
 			"categories": [
@@ -127,6 +102,169 @@
 			]
 		},
 		{
+			"name": "Bed Wars",
+			"aliases": ["BEDWARS"],
+			"checkpoints": 6,
+			"categories": [
+				{
+					"name": "Any%",
+					"checkpoints": [1, 2]
+				},
+				{
+					"name": "All Checkpoints",
+					"checkpoints": [1, 2, 3, 4, 5, 6]
+				},
+				{
+					"name": "Shortcutless%",
+					"checkpoints": [1, 2, 3, 4, 5, 6],
+					"variables": [
+						{
+							"type": "speed",
+							"options": ["No Speed", "Speed 1", "Speed 2"]
+						}
+					]
+				},
+				{
+					"name": "Seasonal%",
+					"checkpoints": [1, 2],
+					"variables": [
+						{
+							"type": "route",
+							"options": ["Any%", "All Checkpoints"]
+						}
+					],
+					"checkpointOverrides": 	[
+						{
+							"options": ["All Checkpoints"],
+							"checkpoints": [1, 2, 3, 4, 5, 6]
+						}
+					]
+				}
+			]
+		},
+		{
+			"name": "SkyWars",
+			"checkpoints": 7,
+			"categories": [
+				{
+					"name": "Any%",
+					"checkpoints": [1, 2],
+					"variables": [
+						{
+							"type": "version",
+							"options": ["1.8-1.13", "1.14+"]
+						}
+					]
+				},
+				{
+					"name": "All Checkpoints",
+					"checkpoints": [1, 2, 3, 4, 5, 6, 7],
+					"variables": [
+						{
+							"type": "version",
+							"options": ["1.8-1.13", "1.14+"]
+						}
+					]
+				},
+				{
+					"name": "Shortcutless%",
+					"checkpoints": [1, 2, 3, 4, 5, 6, 7],
+					"variables": [
+						{
+							"type": "version",
+							"options": ["1.8-1.13", "1.14+"]
+						},
+						{
+							"type": "speed",
+							"options": ["No Speed", "Speed 1", "Speed 2"]
+						}
+					]
+				},
+				{
+					"name": "Seasonal%",
+					"checkpoints": [1, 2],
+					"variables": [
+						{
+							"type": "route",
+							"options": ["Any%", "All Checkpoints"]
+						},
+						{
+							"type": "version",
+							"options": ["1.8-1.13", "1.14+"]
+						}
+					],
+					"checkpointOverrides": 	[
+						{
+							"options": ["All Checkpoints", null],
+							"checkpoints": [1, 2, 3, 4, 5, 6, 7]
+						}
+					]
+				}
+			]
+		},
+		{
+			"name": "Murder Mystery",
+			"checkpoints": 3,
+			"categories": [
+				{
+					"name": "Any%",
+					"checkpoints": [1, 2, 3]
+				},
+				{
+					"name": "All Checkpoints",
+					"checkpoints": [1, 2, 3]
+				},
+				{
+					"name": "Seasonal%",
+					"checkpoints": [1, 2, 3],
+					"variables": [
+						{
+							"type": "route",
+							"options": ["Any%", "All Checkpoints"]
+						}
+					]
+				}
+			]
+		},
+		{
+			"name": "Housing",
+			"checkpoints": 7,
+			"categories": [
+				{
+					"name": "Any%",
+					"checkpoints": [1, 2]
+				},
+				{
+					"name": "All Checkpoints",
+					"checkpoints": [1, 2, 3, 4, 5, 6, 7]
+				},
+				{
+					"name": "Shortcutless%",
+					"checkpoints": [1, 2, 3, 4, 5, 6, 7],
+					"variables": [
+						{
+							"type": "speed",
+							"options": ["No Speed", "Speed 1", "Speed 2"]
+						}
+					]
+				}
+			]
+		},
+		{
+			"name": "The TNT Games",
+			"checkpoints": 3,
+			"categories": [
+				{
+					"name": "Any%",
+					"checkpoints": [1, 2, 3]
+				},
+				{
+					"name": "All Checkpoints",
+					"checkpoints": [1, 2, 3]
+				}
+			]
+		},
+		{
 			"name": "Arcade Games",
 			"checkpoints": 6,
 			"categories": [
@@ -147,6 +285,241 @@
 							"options": ["No Speed", "Speed 1", "Speed 2"]
 						}
 					]
+				}
+			]
+		},
+		{
+			"name": "Build Battle",
+			"checkpoints": 3,
+			"categories": [
+				{
+					"name": "Any%",
+					"checkpoints": [1, 2]
+				},
+				{
+					"name": "All Checkpoints",
+					"checkpoints": [1, 2, 3]
+				}
+			]
+		},
+		{
+			"name": "Duels",
+			"checkpoints": 3,
+			"categories": [
+				{
+					"name": "Any%",
+					"checkpoints": [1, 2, 3]
+				},
+				{
+					"name": "All Checkpoints",
+					"checkpoints": [1, 2, 3]
+				}
+			]
+		},
+		{
+			"name": "Prototype Lobby",
+			"aliases": ["PROTOTYPE"],
+			"checkpoints": 4,
+			"categories": [
+				{
+					"name": "Any%",
+					"checkpoints": [1, 2]
+				},
+				{
+					"name": "All Checkpoints",
+					"checkpoints": [1, 2, 3, 4]
+				}
+			]
+		},
+		{
+			"name": "UHC Champions",
+			"checkpoints": 3,
+			"categories": [
+				{
+					"name": "Any%",
+					"checkpoints": [1, 2, 3]
+				},
+				{
+					"name": "All Checkpoints",
+					"checkpoints": [1, 2, 3]
+				},
+				{
+					"name": "Shortcutless%",
+					"checkpoints": [1, 2, 3],
+					"variables": [
+						{
+							"type": "speed",
+							"options": ["No Speed", "Speed 1", "Speed 2"]
+						}
+					]
+				}
+			]
+		},
+		{
+			"name": "Classic Games",
+			"checkpoints": 2,
+			"categories": [
+				{
+					"name": "Any%",
+					"checkpoints": [1, 2]
+				},
+				{
+					"name": "All Checkpoints",
+					"checkpoints": [1, 2]
+				},
+				{
+					"name": "Shortcutless%",
+					"checkpoints": [1, 2],
+					"variables": [
+						{
+							"type": "speed",
+							"options": ["No Speed", "Speed 1", "Speed 2"]
+						}
+					]
+				}
+			]
+		},
+		{
+			"name": "Cops & Crims",
+			"aliases": ["COPS AND CRIMS"],
+			"checkpoints": 4,
+			"categories": [
+				{
+					"name": "Any%",
+					"checkpoints": [1, 2]
+				},
+				{
+					"name": "All Checkpoints",
+					"checkpoints": [1, 2, 3, 4]
+				},
+				{
+					"name": "Shortcutless%",
+					"checkpoints": [1, 2, 3, 4],
+					"variables": [
+						{
+							"type": "speed",
+							"options": ["No Speed", "Speed 1", "Speed 2"]
+						}
+					]
+				}
+			]
+		},
+		{
+			"name": "Mega Walls",
+			"checkpoints": 3,
+			"categories": [
+				{
+					"name": "Any%",
+					"checkpoints": [1, 2, 3]
+				},
+				{
+					"name": "All Checkpoints",
+					"checkpoints": [1, 2, 3]
+				},
+				{
+					"name": "Shortcutless%",
+					"checkpoints": [1, 2, 3],
+					"variables": [
+						{
+							"type": "speed",
+							"options": ["No Speed", "Speed 1", "Speed 2"]
+						}
+					]
+				}
+			]
+		},
+		{
+			"name": "Smash Heroes",
+			"checkpoints": 5,
+			"categories": [
+				{
+					"name": "Any%",
+					"checkpoints": [1, 2, 3, 4, 5]
+				},
+				{
+					"name": "All Checkpoints",
+					"checkpoints": [1, 2, 3, 4, 5]
+				},
+				{
+					"name": "Shortcutless%",
+					"checkpoints": [1, 2, 3, 4, 5],
+					"variables": [
+						{
+							"type": "speed",
+							"options": ["No Speed", "Speed 1", "Speed 2"]
+						}
+					]
+				}
+			]
+		},
+		{
+			"name": "Warlords",
+			"checkpoints": 2,
+			"categories": [
+				{
+					"name": "Any%",
+					"checkpoints": [1, 2]
+				},
+				{
+					"name": "All Checkpoints",
+					"checkpoints": [1, 2]
+				}
+			]
+		},
+		{
+			"name": "Blitz Survival Games",
+			"aliases": ["BLITZ SG"],
+			"checkpoints": 0,
+			"categories": [
+				{
+					"name": "Any%",
+					"checkpoints": []
+				},
+				{
+					"name": "All Checkpoints",
+					"checkpoints": []
+				},
+				{
+					"name": "Shortcutless%",
+					"checkpoints": [],
+					"variables": [
+						{
+							"type": "speed",
+							"options": ["No Speed", "Speed 1", "Speed 2"]
+						}
+					]
+				}
+			]
+		},
+		{
+			"name": "UHC East",
+			"aliases": ["UHC Champions"],
+			"checkpoints": 0,
+			"categories": [
+				{
+					"name": "All Checkpoints",
+					"checkpoints": []
+				},
+				{
+					"name": "Shortcutless%",
+					"checkpoints": [],
+					"variables": [
+						{
+							"type": "speed",
+							"options": ["No Speed", "Speed 1", "Speed 2"]
+						}
+					]
+				}
+			]
+		},
+		{
+			"name": "UHC East",
+			"aliases": ["UHC Champions"],
+			"checkpoints": 0,
+			"categories": [
+				{
+					"name": "All Checkpoints",
+					"checkpoints": []
 				}
 			]
 		}
