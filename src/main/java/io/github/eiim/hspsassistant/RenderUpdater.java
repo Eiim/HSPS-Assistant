@@ -4,6 +4,7 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.apache.maven.artifact.versioning.ArtifactVersion;
 
+import io.github.eiim.hspsassistant.Categories.Lobby;
 import io.github.eiim.hspsassistant.GraphicsHelper.ColorSettings;
 import net.minecraft.client.Minecraft;
 import net.minecraft.world.scores.Objective;
@@ -11,6 +12,8 @@ import net.minecraft.world.scores.Scoreboard;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.client.event.RenderGuiEvent;
+import net.minecraftforge.event.TickEvent.ClientTickEvent;
+import net.minecraftforge.event.level.LevelEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.ModList;
 import net.minecraftforge.fml.event.lifecycle.FMLCommonSetupEvent;
@@ -33,20 +36,14 @@ public class RenderUpdater {
 	private static final int CLEAR = 0x00000000;
 	private static final String title = "Hypixel Server Parkour";
 	
+	private String lobby;
+	private boolean inHypixel = true;
+	private boolean worldRefreshed = false;
+	
 	@SubscribeEvent
     public void onRender(RenderGuiEvent event) {
 		
-		Scoreboard sb = mc.level.getScoreboard();
-		Objective obj = sb.getDisplayObjective(1);
-		String lobby = "";
-		if(obj != null) { // Only draw Hypixel overlays if we're on Hypixel or at least something with a scoreboard
-			lobby = obj.getDisplayName().getString();
-			
-			// We'll need to normalize to the config value later
-			if("HYPIXEL".equals(lobby)) {
-				lobby = "Main Lobby";
-			}
-			
+		if(inHypixel) {
 			int screenBorder = 3;
 			int padding = 3;
 			String catString = category+" "+(isNew ? "1.13+" : "1.8-1.12");
@@ -96,6 +93,53 @@ public class RenderUpdater {
 		y = 3*spacing + 2*sqSize;
 		GraphicsHelper.drawRectBordered(event.getPoseStack(), x, y, width-spacing-x, sqSize/2, lineWidth, KeyMonitor.jump.isDown() ? pressed : unpressed);
     }
+	
+	@SubscribeEvent
+	public void onLogin(LevelEvent.Load event) {
+		worldRefreshed = true;
+	}
+	
+	@SubscribeEvent
+	public void onTick(ClientTickEvent event) {
+		if(worldRefreshed) {
+			worldRefreshed = !updateLobbyCat();
+		}
+	}
+	
+	private boolean updateLobbyCat() {
+		LOGGER.debug("Updating lobby");
+		if(mc.level == null) return false;
+		Scoreboard sb = mc.level.getScoreboard();
+		Objective obj = sb.getDisplayObjective(1);
+		// Only draw Hypixel overlays if we're on Hypixel or at least something with a scoreboard
+		inHypixel = obj != null;
+		
+		if(inHypixel) {
+			lobby = obj.getDisplayName().getString();
+			
+			for(Lobby l : SettingsLoader.categories.lobbies) {
+				if(lobby.toLowerCase().equals(l.name.toLowerCase())) {
+					lobby = l.name;
+					return true;
+				} else {
+					if(l.aliases != null) {
+						for(String s : l.aliases) {
+							if(lobby.toLowerCase().equals(s.toLowerCase())) {
+								lobby = l.name;
+								return true;
+							}
+						}
+					}
+				}
+			}
+			
+			// We'll need to normalize to the config value later
+			if("HYPIXEL".equals(lobby)) {
+				lobby = "Main Lobby";
+			}
+		}
+		return true;
+	}
 	
 	@SubscribeEvent
 	public static void onCommonSetupEvent(FMLCommonSetupEvent event) {
