@@ -102,13 +102,14 @@ public class RenderUpdater {
 	@SubscribeEvent
 	public void onTick(ClientTickEvent event) {
 		if(worldRefreshed) {
-			worldRefreshed = !updateLobbyCat();
+			worldRefreshed = false;
+			updateLobbyCat();
 		}
 	}
 	
-	private boolean updateLobbyCat() {
+	private void updateLobbyCat() {
 		LOGGER.debug("Updating lobby");
-		if(mc.level == null) return false;
+		if(mc.level == null) return;
 		Scoreboard sb = mc.level.getScoreboard();
 		Objective obj = sb.getDisplayObjective(1);
 		// Only draw Hypixel overlays if we're on Hypixel or at least something with a scoreboard
@@ -120,20 +121,19 @@ public class RenderUpdater {
 			for(Lobby l : SettingsLoader.categories.lobbies) {
 				if(lobby.toLowerCase().equals(l.name.toLowerCase())) {
 					lobby = l.name;
-					return true;
+					return;
 				} else {
 					if(l.aliases != null) {
 						for(String s : l.aliases) {
 							if(lobby.toLowerCase().equals(s.toLowerCase())) {
 								lobby = l.name;
-								return true;
+								return;
 							}
 						}
 					}
 				}
 			}
 		}
-		return true;
 	}
 	
 	@SubscribeEvent
