@@ -132,11 +132,6 @@ public class RenderUpdater {
 					}
 				}
 			}
-			
-			// We'll need to normalize to the config value later
-			if("HYPIXEL".equals(lobby)) {
-				lobby = "Main Lobby";
-			}
 		}
 		return true;
 	}
