@@ -28,33 +28,28 @@ public class KeyMonitor {
 	public static KeyMapping back = mc.options.keyDown;
 	public static KeyMapping jump = mc.options.keyJump;
 	public static KeyMapping sprint = mc.options.keySprint;
+	public static KeyMapping sneak = mc.options.keyShift;
 	
 	public static final KeyMapping categoryMapping = new KeyMapping("key.hsps.category", InputConstants.Type.KEYSYM, GLFW.GLFW_KEY_C, "key.categories.hsps");
+	public static final KeyMapping variablesMapping = new KeyMapping("key.hsps.variables", InputConstants.Type.KEYSYM, GLFW.GLFW_KEY_V, "key.categories.hsps");
 
 	@SubscribeEvent
 	public static void registerMappings(RegisterKeyMappingsEvent event) {
 		event.register(categoryMapping);
-		LOGGER.debug("Registered mapping");
+		event.register(variablesMapping);
+		LOGGER.debug("Registered mappings");
 	}
 	
 	@SubscribeEvent
 	public void onClientTick(ClientTickEvent event) {
 		if (event.phase == TickEvent.Phase.END) { // Only call code once as the tick event is called twice every tick
 			while (categoryMapping.consumeClick()) {
+				RenderUpdater.switchCategory();
 				LOGGER.debug("Category switched!");
-				switch(RenderUpdater.category) {
-					case "All Checkpoints":
-						RenderUpdater.category = "Any%";
-						break;
-					case "Any%":
-						RenderUpdater.category = "Seasonal%";
-						break;
-					case "Seasonal%":
-						RenderUpdater.category = "All Checkpoints";
-						break;
-					default:
-						RenderUpdater.category = "Any%";
-				}
+		    }
+			while (variablesMapping.consumeClick()) {
+				RenderUpdater.switchVariables();
+				LOGGER.debug("Variables switched!");
 		    }
 		}
 	}

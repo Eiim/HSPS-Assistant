@@ -4,6 +4,7 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.apache.maven.artifact.versioning.ArtifactVersion;
 
+import io.github.eiim.hspsassistant.Categories.Category;
 import io.github.eiim.hspsassistant.Categories.Lobby;
 import io.github.eiim.hspsassistant.GraphicsHelper.ColorSettings;
 import net.minecraft.client.Minecraft;
@@ -28,17 +29,20 @@ public class RenderUpdater {
 	private static ArtifactVersion mcVersion;
 	private static boolean isNew;
 	
-	public static String category = "All Checkpoints";
-	
 	private static final int WHITE = 0xFFFFFFFF;
 	private static final int TRANS_WHITE = 0x88FFFFFF;
 	private static final int TRANS_BLACK = 0x44000000;
 	private static final int CLEAR = 0x00000000;
-	private static final String title = "Hypixel Server Parkour";
+	private static final String TITLE = "Hypixel Server Parkour";
 	
-	private String lobby;
-	private boolean inHypixel = true;
-	private boolean worldRefreshed = false;
+	private static Lobby lobby;
+	private static Category category;
+	private static int categoryId;
+	private static String[] variables = new String[0];
+	private static int variablesId;
+	private static int variablesOptions;
+	private static boolean inHypixel = true;
+	private static boolean worldRefreshed = false;
 	
 	@SubscribeEvent
     public void onRender(RenderGuiEvent event) {
@@ -46,16 +50,16 @@ public class RenderUpdater {
 		if(inHypixel) {
 			int screenBorder = 3;
 			int padding = 3;
-			String catString = category+" "+(isNew ? "1.13+" : "1.8-1.12");
-			int titleWidth = GraphicsHelper.getTextWidth(title);
-			int lobbyWidth = GraphicsHelper.getTextWidth(lobby);
+			String catString = (category == null ? "" : category.name)+" "+String.join(" ", variables);
+			int titleWidth = GraphicsHelper.getTextWidth(TITLE);
+			int lobbyWidth = GraphicsHelper.getTextWidth(lobby == null ? "" : lobby.name);
 			int catWidth = GraphicsHelper.getTextWidth(catString);
 			int maxWidth = Math.max(titleWidth, Math.max(catWidth, lobbyWidth));
 			int lineWidth = 1;
 			ColorSettings tlcs = new ColorSettings(WHITE, TRANS_BLACK, WHITE);
 			
-			GraphicsHelper.drawRectTextBordered(event.getPoseStack(), screenBorder, screenBorder, maxWidth + 2*padding, 7 + 2*padding, title, lineWidth, tlcs);
-			GraphicsHelper.drawRectTextBordered(event.getPoseStack(), screenBorder, screenBorder + 6 + 2*padding, maxWidth + 2*padding, 7 + 2*padding, lobby, lineWidth, tlcs);
+			GraphicsHelper.drawRectTextBordered(event.getPoseStack(), screenBorder, screenBorder, maxWidth + 2*padding, 7 + 2*padding, TITLE, lineWidth, tlcs);
+			GraphicsHelper.drawRectTextBordered(event.getPoseStack(), screenBorder, screenBorder + 6 + 2*padding, maxWidth + 2*padding, 7 + 2*padding, (lobby == null ? "" : lobby.name), lineWidth, tlcs);
 			GraphicsHelper.drawRectTextBordered(event.getPoseStack(), screenBorder, screenBorder + 12 + 4*padding, maxWidth + 2*padding, 7 + 2*padding, catString, lineWidth, tlcs);
 		}
 		
@@ -68,8 +72,12 @@ public class RenderUpdater {
 		ColorSettings pressed = new ColorSettings(WHITE, TRANS_WHITE, WHITE);
 		ColorSettings unpressed = new ColorSettings(WHITE, CLEAR, WHITE);
 		
-		int x = width - 2*sqSize - 2*spacing;
+		int x = width - sqSize - spacing;
 		int y = spacing;
+		GraphicsHelper.drawRectBordered(event.getPoseStack(), x, y, sqSize, sqSize, lineWidth, KeyMonitor.sneak.isDown() ? pressed : unpressed);
+		
+		x = width - 2*sqSize - 2*spacing;
+		y = spacing;
 		GraphicsHelper.drawRectBordered(event.getPoseStack(), x, y, sqSize, sqSize, lineWidth, KeyMonitor.forward.isDown() ? pressed : unpressed);
 		
 		x = width - 3*sqSize - 3*spacing;
@@ -101,7 +109,7 @@ public class RenderUpdater {
 	
 	@SubscribeEvent
 	public void onTick(ClientTickEvent event) {
-		if(worldRefreshed) {
+		if(worldRefreshed) { 
 			worldRefreshed = false;
 			updateLobbyCat();
 		}
@@ -116,23 +124,79 @@ public class RenderUpdater {
 		inHypixel = obj != null;
 		
 		if(inHypixel) {
-			lobby = obj.getDisplayName().getString();
+			String propLobby = obj.getDisplayName().getString();
 			
+			boolean foundLobby = false;
 			for(Lobby l : SettingsLoader.categories.lobbies) {
-				if(lobby.toLowerCase().equals(l.name.toLowerCase())) {
-					lobby = l.name;
-					return;
+				if(propLobby.toLowerCase().equals(l.name.toLowerCase())) {
+					lobby = l;
+					foundLobby = true;
 				} else {
 					if(l.aliases != null) {
 						for(String s : l.aliases) {
-							if(lobby.toLowerCase().equals(s.toLowerCase())) {
-								lobby = l.name;
-								return;
+							if(propLobby.toLowerCase().equals(s.toLowerCase())) {
+								lobby = l;
+								foundLobby = true;
 							}
 						}
 					}
 				}
 			}
+			
+			if(!foundLobby) {
+				// Failed to find lobby - default for first for now
+				lobby = SettingsLoader.categories.lobbies.get(0);
+			}
+			
+			boolean matchingCat = false;
+			if(category != null) {
+				for(int i = 0; i < lobby.categories.size(); i++) {
+					Category c = lobby.categories.get(i);
+					if(c.name == category.name) {
+						category = c;
+						categoryId = i;
+						matchingCat = true;
+					}
+				}
+			}
+			if(!matchingCat) {
+				// Failed to find category - default to first
+				category = lobby.categories.get(0);
+				categoryId = 0;
+			}
+			
+			variablesId = 0;
+			variables = new String[category.variables == null ? 0 : category.variables.size()];
+			variablesOptions = 1;
+			for(int i = 0; i < variables.length; i++) {
+				variables[i] = category.variables.get(i).options[0];
+				variablesOptions *= category.variables.get(i).options.length;
+			}
+		}
+	}
+	
+	public static void switchCategory() {
+		categoryId = (categoryId + 1) % lobby.categories.size();
+		category = lobby.categories.get(categoryId);
+		
+		variablesId = 0;
+		variables = new String[category.variables == null ? 0 : category.variables.size()];
+		variablesOptions = 1;
+		for(int i = 0; i < variables.length; i++) {
+			variables[i] = category.variables.get(i).options[0];
+			variablesOptions *= category.variables.get(i).options.length;
+		}
+	}
+	
+	public static void switchVariables() {
+		variablesId = (variablesId + 1) % variablesOptions;
+		LOGGER.debug(variablesId+"/"+variablesOptions);
+		int runProd = 1;
+		// Loop through variables backwards so the first one is the "top-most" variable
+		for(int i = variables.length - 1; i >= 0; i--) {
+			String[] opts = category.variables.get(i).options;
+			runProd *= opts.length;
+			variables[i] = opts[(variablesId % runProd)/(runProd / opts.length)];
 		}
 	}
 	
