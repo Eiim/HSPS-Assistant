@@ -34,8 +34,10 @@ public class ChatListener {
 		try {
 			if(text.startsWith("Parkour challenge started!")) {
 				LOGGER.debug("Got parkour start message");
+				RenderUpdater.startTiming();
 			} else if(text.startsWith("Reset your timer to 00:00!")) {
 				LOGGER.debug("Got reset message");
+				RenderUpdater.startTiming();
 			} else if(text.startsWith("You reached Checkpoint")) {
 				Matcher cpMatcher = CP_NUM_REGEX.matcher(text);
 				cpMatcher.find();
@@ -44,6 +46,7 @@ public class ChatListener {
 				tmMatcher.find();
 				String time = tmMatcher.group();
 				LOGGER.debug("Recieved total time of"+time+" at "+cpnum);
+				RenderUpdater.splitTotal(Integer.parseInt(cpnum), Timing.timestringToMillis(time));
 			} else if(text.startsWith("You finished this part")) {
 				if(text.contains("personal best:")) {
 					// Worse than PB
@@ -53,6 +56,7 @@ public class ChatListener {
 					timerMatcher.find();
 					String pbTime = timerMatcher.group();
 					LOGGER.debug("Recieved split of "+splitTime+" (PB: "+pbTime+")");
+					RenderUpdater.splitDelta(Timing.timestringToMillis(splitTime));
 				} else if(text.contains("beat your personal best")) {
 					// Improved segment PB
 					Matcher timerMatcher = TIMER_REGEX.matcher(text);
@@ -61,17 +65,21 @@ public class ChatListener {
 					timerMatcher.find();
 					String pbTime = timerMatcher.group();
 					LOGGER.debug("Recieved split of "+splitTime+" (old PB: "+pbTime+")");
+					RenderUpdater.splitDelta(Timing.timestringToMillis(splitTime));
 				} else {
 					// First completion of segment/cp
 					Matcher timerMatcher = TIMER_REGEX.matcher(text);
 					timerMatcher.find();
 					String splitTime = timerMatcher.group();
 					LOGGER.debug("Recieved split of "+splitTime);
+					RenderUpdater.splitDelta(Timing.timestringToMillis(splitTime));
 				}
 			} else if(text.startsWith("Parkour challenge failed!")) {
 				LOGGER.debug("Recieved failed message");
+				RenderUpdater.stopTiming();
 			} else if(text.startsWith("Parkour challenge cancelled!")) {
 				LOGGER.debug("Recieved cancelled message");
+				RenderUpdater.stopTiming();
 			} else if(text.startsWith("Your time of ")) {
 				// Worse than PB overall
 				Matcher timerMatcher = TIMER_REGEX.matcher(text);
@@ -80,18 +88,21 @@ public class ChatListener {
 				timerMatcher.find();
 				String pbTime = timerMatcher.group();
 				LOGGER.debug("Recieved finish message with time "+time+" and pb "+pbTime);
+				RenderUpdater.finalTime(Timing.timestringToMillis(time));
 			} else if(text.startsWith("That's a new record")) {
 				// Improved total PB
 				Matcher timerMatcher = TIMER_REGEX.matcher(text);
 				timerMatcher.find();
 				String time = timerMatcher.group();
 				LOGGER.debug("Recieved finish message with time "+time);
+				RenderUpdater.finalTime(Timing.timestringToMillis(time));
 			} else if(text.startsWith("Congratulations on completing the parkour!")) {
 				// First time completions
 				Matcher timerMatcher = TIMER_REGEX.matcher(text);
 				timerMatcher.find();
 				String time = timerMatcher.group();
 				LOGGER.debug("Recieved new finish message with time "+time);
+				RenderUpdater.finalTime(Timing.timestringToMillis(time));
 			} else {
 				LOGGER.debug("Recieved other message: "+text);
 			}

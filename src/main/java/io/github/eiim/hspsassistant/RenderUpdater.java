@@ -2,7 +2,6 @@ package io.github.eiim.hspsassistant;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-import org.apache.maven.artifact.versioning.ArtifactVersion;
 
 import io.github.eiim.hspsassistant.Categories.Category;
 import io.github.eiim.hspsassistant.Categories.Lobby;
@@ -16,7 +15,6 @@ import net.minecraftforge.client.event.RenderGuiEvent;
 import net.minecraftforge.event.TickEvent.ClientTickEvent;
 import net.minecraftforge.event.level.LevelEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
-import net.minecraftforge.fml.ModList;
 import net.minecraftforge.fml.event.lifecycle.FMLCommonSetupEvent;
 
 @OnlyIn(Dist.CLIENT)
@@ -25,9 +23,6 @@ public class RenderUpdater {
 	private static final Logger LOGGER = LogManager.getLogger();
 	
 	private static Minecraft mc;
-	
-	private static ArtifactVersion mcVersion;
-	private static boolean isNew;
 	
 	private static final int WHITE = 0xFFFFFFFF;
 	private static final int TRANS_WHITE = 0x88FFFFFF;
@@ -43,6 +38,8 @@ public class RenderUpdater {
 	private static int variablesOptions;
 	private static boolean inHypixel = true;
 	private static boolean worldRefreshed = false;
+	private static Timing timing;
+	private static String time = "";
 	
 	@SubscribeEvent
     public void onRender(RenderGuiEvent event) {
@@ -51,16 +48,20 @@ public class RenderUpdater {
 			int screenBorder = 3;
 			int padding = 3;
 			String catString = (category == null ? "" : category.name)+" "+String.join(" ", variables);
+			if(timing != null && timing.active)
+				time = timing.sinceStartString();
 			int titleWidth = GraphicsHelper.getTextWidth(TITLE);
 			int lobbyWidth = GraphicsHelper.getTextWidth(lobby == null ? "" : lobby.name);
 			int catWidth = GraphicsHelper.getTextWidth(catString);
-			int maxWidth = Math.max(titleWidth, Math.max(catWidth, lobbyWidth));
+			int timeWidth = GraphicsHelper.getTextWidth(time);
+			int maxWidth = Math.max(timeWidth, Math.max(titleWidth, Math.max(catWidth, lobbyWidth)));
 			int lineWidth = 1;
 			ColorSettings tlcs = new ColorSettings(WHITE, TRANS_BLACK, WHITE);
 			
 			GraphicsHelper.drawRectTextBordered(event.getPoseStack(), screenBorder, screenBorder, maxWidth + 2*padding, 7 + 2*padding, TITLE, lineWidth, tlcs);
 			GraphicsHelper.drawRectTextBordered(event.getPoseStack(), screenBorder, screenBorder + 6 + 2*padding, maxWidth + 2*padding, 7 + 2*padding, (lobby == null ? "" : lobby.name), lineWidth, tlcs);
 			GraphicsHelper.drawRectTextBordered(event.getPoseStack(), screenBorder, screenBorder + 12 + 4*padding, maxWidth + 2*padding, 7 + 2*padding, catString, lineWidth, tlcs);
+			GraphicsHelper.drawRectTextBordered(event.getPoseStack(), screenBorder, screenBorder + 18 + 6*padding, maxWidth + 2*padding, 7 + 2*padding, time, lineWidth, tlcs);
 		}
 		
 		// Key indicators
@@ -172,6 +173,9 @@ public class RenderUpdater {
 				variables[i] = category.variables.get(i).options[0];
 				variablesOptions *= category.variables.get(i).options.length;
 			}
+			
+			timing = null;
+			time = "";
 		}
 	}
 	
@@ -186,6 +190,9 @@ public class RenderUpdater {
 			variables[i] = category.variables.get(i).options[0];
 			variablesOptions *= category.variables.get(i).options.length;
 		}
+		
+		timing = null;
+		time = "";
 	}
 	
 	public static void switchVariables() {
@@ -198,14 +205,46 @@ public class RenderUpdater {
 			runProd *= opts.length;
 			variables[i] = opts[(variablesId % runProd)/(runProd / opts.length)];
 		}
+		
+		timing = null;
+		time = "";
+	}
+	
+	public static void startTiming() {
+		int[] cps = category.checkpoints;
+		if(category.checkpointOverrides != null) {
+			for(Categories.Override o : category.checkpointOverrides) {
+				if(o.matches(variables)) {
+					cps = o.checkpoints;
+				}
+			}
+		}
+		timing = new Timing(cps);
+	}
+	
+	public static void splitDelta(int delta) {
+		timing.setDelta(delta);
+	}
+	
+	public static void splitTotal(int cp, int total) {
+		timing.cpTotal(cp, total);
+	}
+	
+	public static void finalTime(int total) {
+		timing.cpTotal(-1, total);
+		timing.active = false;
+		time = Timing.millisToTimestring(total);
+	}
+	
+	public static void stopTiming() {
+		timing.active = false;
 	}
 	
 	@SubscribeEvent
 	public static void onCommonSetupEvent(FMLCommonSetupEvent event) {
 		mc = Minecraft.getInstance();
 		
-		mcVersion = ModList.get().getModFileById("minecraft").getMods().get(0).getVersion();
-		isNew = mcVersion.getMinorVersion() > 12;
+		// ModList.get().getModFileById("minecraft").getMods().get(0).getVersion();
 	}
 
 }
