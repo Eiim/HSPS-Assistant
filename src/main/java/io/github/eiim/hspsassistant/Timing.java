@@ -4,7 +4,7 @@ import java.time.Instant;
 
 public class Timing {
 	
-	private int[] checkpoints;
+	public int[] checkpoints;
 	private int lastCP = 0;
 	private long startTime;
 	public int[] segmentTimes;
@@ -34,18 +34,20 @@ public class Timing {
 	}
 	
 	public void setDelta(int delta) {
-		for(int i = 0; i < checkpoints.length; i++) {
+		for(int i = 0; i <= checkpoints.length; i++) {
 			if(i == checkpoints.length || checkpoints[i] == lastCP) {
 				segmentTimes[i] = delta;
+				return;
 			}
 		}
 	}
 	
 	public void cpTotal(int cp, int total) {
 		lastCP = cp;
-		for(int i = 0; i < checkpoints.length; i++) {
+		for(int i = 0; i <= checkpoints.length; i++) {
 			if(i == checkpoints.length || checkpoints[i] == cp) {
 				cumulativeTimes[i] = total;
+				return;
 			}
 		}
 	}

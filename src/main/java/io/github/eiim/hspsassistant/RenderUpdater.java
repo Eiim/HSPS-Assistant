@@ -56,12 +56,22 @@ public class RenderUpdater {
 			int timeWidth = GraphicsHelper.getTextWidth(time);
 			int maxWidth = Math.max(timeWidth, Math.max(titleWidth, Math.max(catWidth, lobbyWidth)));
 			int lineWidth = 1;
+			int width = maxWidth + 2*padding;
+			int height = 7 + 2*padding;
 			ColorSettings tlcs = new ColorSettings(WHITE, TRANS_BLACK, WHITE);
 			
-			GraphicsHelper.drawRectTextBordered(event.getPoseStack(), screenBorder, screenBorder, maxWidth + 2*padding, 7 + 2*padding, TITLE, lineWidth, tlcs);
-			GraphicsHelper.drawRectTextBordered(event.getPoseStack(), screenBorder, screenBorder + 6 + 2*padding, maxWidth + 2*padding, 7 + 2*padding, (lobby == null ? "" : lobby.name), lineWidth, tlcs);
-			GraphicsHelper.drawRectTextBordered(event.getPoseStack(), screenBorder, screenBorder + 12 + 4*padding, maxWidth + 2*padding, 7 + 2*padding, catString, lineWidth, tlcs);
-			GraphicsHelper.drawRectTextBordered(event.getPoseStack(), screenBorder, screenBorder + 18 + 6*padding, maxWidth + 2*padding, 7 + 2*padding, time, lineWidth, tlcs);
+			GraphicsHelper.drawRectTextBordered(event.getPoseStack(), screenBorder, screenBorder, width, height, TITLE, lineWidth, tlcs);
+			GraphicsHelper.drawRectTextBordered(event.getPoseStack(), screenBorder, screenBorder + 6 + 2*padding, width, height, (lobby == null ? "" : lobby.name), lineWidth, tlcs);
+			GraphicsHelper.drawRectTextBordered(event.getPoseStack(), screenBorder, screenBorder + 12 + 4*padding, width, height, catString, lineWidth, tlcs);
+			GraphicsHelper.drawRectTextBordered(event.getPoseStack(), screenBorder, screenBorder + 18 + 6*padding, width, height, time, lineWidth, tlcs);
+			
+			if(timing != null) {
+				for(int i = 0; i < timing.segmentTimes.length; i++) {
+					String cp = i == timing.checkpoints.length ? "Finish" : "CP "+timing.checkpoints[i];
+					GraphicsHelper.drawRectTextBordered(event.getPoseStack(), screenBorder, screenBorder + (6 + 2*padding)*(i+4), width/2, height, cp, lineWidth, tlcs);
+					GraphicsHelper.drawRectTextBordered(event.getPoseStack(), screenBorder + width/2, screenBorder + (6 + 2*padding)*(i+4), width/2, height, Timing.millisToTimestring(timing.segmentTimes[i]), lineWidth, tlcs);
+				}
+			}
 		}
 		
 		// Key indicators
@@ -231,7 +241,7 @@ public class RenderUpdater {
 	}
 	
 	public static void finalTime(int total) {
-		timing.cpTotal(-1, total);
+		timing.cpTotal(lobby.checkpoints+1, total);
 		timing.active = false;
 		time = Timing.millisToTimestring(total);
 	}
