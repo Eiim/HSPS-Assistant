@@ -12,7 +12,6 @@ import com.google.gson.Gson;
 
 public class RunDataFile {
 
-	private File file;
 	private FileWriter fw;
 	private Logger LOGGER = LogManager.getLogger();
 	
@@ -21,8 +20,12 @@ public class RunDataFile {
 		if(!file.exists()) {
 			file.getParentFile().mkdirs();
 			file.createNewFile();
+			fw = new FileWriter(file, StandardCharsets.UTF_8, true);
+			fw.write(CSVParser.stringsToLine("lobby","category","variables","time","splits"));
+			fw.flush();
+		} else {
+			fw = new FileWriter(file, StandardCharsets.UTF_8, true);
 		}
-		fw = new FileWriter(file, StandardCharsets.UTF_8, true);
 	}
 	
 	public void appendRun(RunResult run) {
