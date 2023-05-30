@@ -1,5 +1,9 @@
 package io.github.eiim.hspsassistant;
 
+import java.io.File;
+import java.io.IOException;
+import java.nio.file.Path;
+
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -40,6 +44,8 @@ public class RenderUpdater {
 	private static boolean worldRefreshed = false;
 	private static Timing timing;
 	private static String time = "";
+	
+	private static RunDataFile rdf;
 	
 	@SubscribeEvent
     public void onRender(RenderGuiEvent event) {
@@ -234,6 +240,17 @@ public class RenderUpdater {
 	
 	public static void splitDelta(int delta) {
 		timing.setDelta(delta);
+		if(timing.active == false) {
+			int total = timing.cumulativeTimes[timing.cumulativeTimes.length-1];
+			time = Timing.millisToTimestring(total);
+			// Manually box int[] to Integer[]
+			Integer[] splits = new Integer[timing.segmentTimes.length];
+			for(int i = 0; i < splits.length; i++) {
+				splits[i] = timing.segmentTimes[i];
+			}
+			RunResult rr = new RunResult(lobby.name, category.name, variables, total, splits);
+			rdf.appendRun(rr);
+		}
 	}
 	
 	public static void splitTotal(int cp, int total) {
@@ -243,7 +260,6 @@ public class RenderUpdater {
 	public static void finalTime(int total) {
 		timing.cpTotal(lobby.checkpoints+1, total);
 		timing.active = false;
-		time = Timing.millisToTimestring(total);
 	}
 	
 	public static void stopTiming() {
@@ -251,9 +267,12 @@ public class RenderUpdater {
 	}
 	
 	@SubscribeEvent
-	public static void onCommonSetupEvent(FMLCommonSetupEvent event) {
+	public static void onCommonSetupEvent(FMLCommonSetupEvent event) throws IOException {
 		mc = Minecraft.getInstance();
 		
+		Path rootDir = mc.gameDirectory.toPath();
+		File configFile = rootDir.resolve("data").resolve("hspsruns.csv").toFile();
+		rdf = new RunDataFile(configFile);
 		// ModList.get().getModFileById("minecraft").getMods().get(0).getVersion();
 	}
 
