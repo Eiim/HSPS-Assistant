@@ -47,6 +47,7 @@ public class RenderUpdater {
 	
 	private static RunDataFile rdf;
 	private static PBFile pbf;
+	private static GoldsFile gdf;
 	
 	@SubscribeEvent
     public void onRender(RenderGuiEvent event) {
@@ -253,6 +254,7 @@ public class RenderUpdater {
 			rdf.appendRun(rr);
 			pbf.registerRun(rr);
 		}
+		gdf.registerRun(new Segment(lobby.name, category.name, variables, timing.lastCP, delta));
 	}
 	
 	public static void splitTotal(int cp, int total) {
@@ -277,6 +279,8 @@ public class RenderUpdater {
 		rdf = new RunDataFile(configFile);
 		File pbFile = rootDir.resolve("data").resolve("hspspbs.csv").toFile();
 		pbf = new PBFile(pbFile);
+		File gdFile = rootDir.resolve("data").resolve("hspsgolds.csv").toFile();
+		gdf = new GoldsFile(gdFile);
 		
 		// ModList.get().getModFileById("minecraft").getMods().get(0).getVersion();
 	}

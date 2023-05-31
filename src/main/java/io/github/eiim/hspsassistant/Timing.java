@@ -5,7 +5,7 @@ import java.time.Instant;
 public class Timing {
 	
 	public int[] checkpoints;
-	private int lastCP = 0;
+	public int lastCP = 0;
 	private long startTime;
 	public int[] segmentTimes;
 	public int[] cumulativeTimes;
