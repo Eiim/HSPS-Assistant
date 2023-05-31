@@ -46,6 +46,7 @@ public class RenderUpdater {
 	private static String time = "";
 	
 	private static RunDataFile rdf;
+	private static PBFile pbf;
 	
 	@SubscribeEvent
     public void onRender(RenderGuiEvent event) {
@@ -250,6 +251,7 @@ public class RenderUpdater {
 			}
 			RunResult rr = new RunResult(lobby.name, category.name, variables, total, splits);
 			rdf.appendRun(rr);
+			pbf.registerRun(rr);
 		}
 	}
 	
@@ -273,6 +275,9 @@ public class RenderUpdater {
 		Path rootDir = mc.gameDirectory.toPath();
 		File configFile = rootDir.resolve("data").resolve("hspsruns.csv").toFile();
 		rdf = new RunDataFile(configFile);
+		File pbFile = rootDir.resolve("data").resolve("hspspbs.csv").toFile();
+		pbf = new PBFile(pbFile);
+		
 		// ModList.get().getModFileById("minecraft").getMods().get(0).getVersion();
 	}
 

@@ -29,7 +29,7 @@ public class RunDataFile {
 	}
 	
 	public void appendRun(RunResult run) {
-		LOGGER.debug("Appending");
+		LOGGER.debug("Writing run");
 		Gson gson = new Gson();
 		String line = CSVParser.stringsToLine(run.lobby, run.category, gson.toJson(run.variables), ""+run.time, gson.toJson(run.splitTimes));
 		try {

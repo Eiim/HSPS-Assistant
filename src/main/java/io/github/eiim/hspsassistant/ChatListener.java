@@ -45,7 +45,7 @@ public class ChatListener {
 				Matcher tmMatcher = TIMER_REGEX.matcher(text);
 				tmMatcher.find();
 				String time = tmMatcher.group();
-				LOGGER.debug("Recieved total time of"+time+" at "+cpnum);
+				LOGGER.debug("Recieved total time of "+time+" at "+cpnum);
 				RenderUpdater.splitTotal(Integer.parseInt(cpnum), Timing.timestringToMillis(time));
 			} else if(text.startsWith("You finished this part")) {
 				if(text.contains("personal best:")) {
