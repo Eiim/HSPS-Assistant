@@ -43,7 +43,8 @@ public class RenderUpdater {
 	private static boolean inHypixel = true;
 	private static boolean worldRefreshed = false;
 	private static Timing timing;
-	private static String time = "";
+	private static String time = "00:00.000";
+	private static String pbTime = "00:00.000";
 	
 	private static RunDataFile rdf;
 	private static PBFile pbf;
@@ -61,7 +62,7 @@ public class RenderUpdater {
 			int titleWidth = GraphicsHelper.getTextWidth(TITLE);
 			int lobbyWidth = GraphicsHelper.getTextWidth(lobby == null ? "" : lobby.name);
 			int catWidth = GraphicsHelper.getTextWidth(catString);
-			int timeWidth = GraphicsHelper.getTextWidth(time);
+			int timeWidth = GraphicsHelper.getTextWidth("00:00.000 | 00:00.000");
 			int maxWidth = Math.max(timeWidth, Math.max(titleWidth, Math.max(catWidth, lobbyWidth)));
 			int lineWidth = 1;
 			int width = maxWidth + 2*padding;
@@ -71,7 +72,7 @@ public class RenderUpdater {
 			GraphicsHelper.drawRectTextBordered(event.getPoseStack(), screenBorder, screenBorder, width, height, TITLE, lineWidth, tlcs);
 			GraphicsHelper.drawRectTextBordered(event.getPoseStack(), screenBorder, screenBorder + 6 + 2*padding, width, height, (lobby == null ? "" : lobby.name), lineWidth, tlcs);
 			GraphicsHelper.drawRectTextBordered(event.getPoseStack(), screenBorder, screenBorder + 12 + 4*padding, width, height, catString, lineWidth, tlcs);
-			GraphicsHelper.drawRectTextBordered(event.getPoseStack(), screenBorder, screenBorder + 18 + 6*padding, width, height, time, lineWidth, tlcs);
+			GraphicsHelper.drawRectTextBordered(event.getPoseStack(), screenBorder, screenBorder + 18 + 6*padding, width, height, time+" | "+pbTime, lineWidth, tlcs);
 			
 			if(timing != null) {
 				for(int i = 0; i < timing.segmentTimes.length; i++) {
@@ -193,7 +194,8 @@ public class RenderUpdater {
 			}
 			
 			timing = null;
-			time = "";
+			time = "00:00.000";
+			pbTime = Timing.millisToTimestring(pbf.getPB(lobby.name, category.name, variables));
 		}
 	}
 	
@@ -210,7 +212,8 @@ public class RenderUpdater {
 		}
 		
 		timing = null;
-		time = "";
+		time = "00:00.000";
+		pbTime = Timing.millisToTimestring(pbf.getPB(lobby.name, category.name, variables));
 	}
 	
 	public static void switchVariables() {
@@ -225,7 +228,7 @@ public class RenderUpdater {
 		}
 		
 		timing = null;
-		time = "";
+		time = "00:00.000";
 	}
 	
 	public static void startTiming() {
@@ -253,6 +256,8 @@ public class RenderUpdater {
 			RunResult rr = new RunResult(lobby.name, category.name, variables, total, splits);
 			rdf.appendRun(rr);
 			pbf.registerRun(rr);
+			// If we got a PB, display it
+			pbTime = Timing.millisToTimestring(pbf.getPB(lobby.name, category.name, variables));
 		}
 		gdf.registerRun(new Segment(lobby.name, category.name, variables, timing.lastCP, delta));
 	}

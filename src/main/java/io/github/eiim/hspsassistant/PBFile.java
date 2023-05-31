@@ -100,7 +100,7 @@ public class PBFile {
 				return rr.time;
 			}
 		}
-		return Integer.MAX_VALUE;
+		return 0;
 	}
 
 }
