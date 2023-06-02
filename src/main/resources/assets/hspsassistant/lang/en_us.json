@@ -1,5 +1,12 @@
 {
   "key.categories.hsps": "HSPS Assistant",
   "key.hsps.category": "Switch Category",
-  "key.hsps.variables": "Switch Variables"
+  "key.hsps.variables": "Switch Variables",
+  "hspsassistant.config.renderKeys": "Enable key visualization?",
+  "hspsassistant.config.savePartial": "Save partial runs?",
+  "hspsassistant.config.saveAll": "Save all runs?",
+  "hspsassistant.config.uiColor": "UI Color",
+  "hspsassistant.config.bgColor": "Background Color",
+  "hspsassistant.config.keyOpacity": "Key Opacity",
+  "hspsassistant.config.bgOpacity": "Background Opacity"
 }
