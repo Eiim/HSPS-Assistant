@@ -28,10 +28,6 @@ public class RenderUpdater {
 	
 	private static Minecraft mc;
 	
-	private static final int WHITE = 0xFFFFFFFF;
-	private static final int TRANS_WHITE = 0x88FFFFFF;
-	private static final int TRANS_BLACK = 0x44000000;
-	private static final int CLEAR = 0x00000000;
 	private static final String TITLE = "Hypixel Server Parkour";
 	
 	private static Lobby lobby;
@@ -67,7 +63,8 @@ public class RenderUpdater {
 			int lineWidth = 1;
 			int width = maxWidth + 2*padding;
 			int height = 7 + 2*padding;
-			ColorSettings tlcs = new ColorSettings(WHITE, TRANS_BLACK, WHITE);
+			
+			ColorSettings tlcs = new ColorSettings(0xFF000000+HSPSConfig.uiColor.get(), HSPSConfig.bgOpacity.get() << 24 + HSPSConfig.bgColor.get(), 0xFF000000+HSPSConfig.uiColor.get());
 			
 			GraphicsHelper.drawRectTextBordered(event.getPoseStack(), screenBorder, screenBorder, width, height, TITLE, lineWidth, tlcs);
 			GraphicsHelper.drawRectTextBordered(event.getPoseStack(), screenBorder, screenBorder + 6 + 2*padding, width, height, (lobby == null ? "" : lobby.name), lineWidth, tlcs);
@@ -84,42 +81,43 @@ public class RenderUpdater {
 		}
 		
 		// Key indicators
-		
-		int width = mc.getWindow().getGuiScaledWidth();
-		int sqSize = 20;
-		int lineWidth = 1;
-		int spacing = 3;
-		ColorSettings pressed = new ColorSettings(WHITE, TRANS_WHITE, WHITE);
-		ColorSettings unpressed = new ColorSettings(WHITE, CLEAR, WHITE);
-		
-		int x = width - sqSize - spacing;
-		int y = spacing;
-		GraphicsHelper.drawRectBordered(event.getPoseStack(), x, y, sqSize, sqSize, lineWidth, KeyMonitor.sneak.isDown() ? pressed : unpressed);
-		
-		x = width - 2*sqSize - 2*spacing;
-		y = spacing;
-		GraphicsHelper.drawRectBordered(event.getPoseStack(), x, y, sqSize, sqSize, lineWidth, KeyMonitor.forward.isDown() ? pressed : unpressed);
-		
-		x = width - 3*sqSize - 3*spacing;
-		y = spacing;
-		GraphicsHelper.drawRectBordered(event.getPoseStack(), x, y, sqSize, sqSize, lineWidth, KeyMonitor.sprint.isDown() ? pressed : unpressed);
-		// TODO: Add ctrl/"helm" icon
-		
-		x = width - 3*sqSize - 3*spacing;
-		y = 2*spacing + sqSize;
-		GraphicsHelper.drawRectBordered(event.getPoseStack(), x, y, sqSize, sqSize, lineWidth, KeyMonitor.left.isDown() ? pressed : unpressed);
-		
-		x = width - 2*sqSize - 2*spacing;
-		y = 2*spacing + sqSize;
-		GraphicsHelper.drawRectBordered(event.getPoseStack(), x, y, sqSize, sqSize, lineWidth, KeyMonitor.back.isDown() ? pressed : unpressed);
-		
-		x = width - sqSize - spacing;
-		y = 2*spacing + sqSize;
-		GraphicsHelper.drawRectBordered(event.getPoseStack(), x, y, sqSize, sqSize, lineWidth, KeyMonitor.right.isDown() ? pressed : unpressed);
-		
-		x = width - 3*sqSize - 3*spacing;
-		y = 3*spacing + 2*sqSize;
-		GraphicsHelper.drawRectBordered(event.getPoseStack(), x, y, width-spacing-x, sqSize/2, lineWidth, KeyMonitor.jump.isDown() ? pressed : unpressed);
+		if(HSPSConfig.renderKeys.get()) {
+			int width = mc.getWindow().getGuiScaledWidth();
+			int sqSize = 20;
+			int lineWidth = 1;
+			int spacing = 3;
+			ColorSettings pressed = new ColorSettings(0xFF000000+HSPSConfig.uiColor.get(), (HSPSConfig.keyOpacity.get() << 24) + HSPSConfig.uiColor.get(), 0xFF000000+HSPSConfig.uiColor.get());
+			ColorSettings unpressed = new ColorSettings(0xFF000000+HSPSConfig.uiColor.get(), 0x00000000, 0xFF000000+HSPSConfig.uiColor.get());
+			
+			int x = width - sqSize - spacing;
+			int y = spacing;
+			GraphicsHelper.drawRectBordered(event.getPoseStack(), x, y, sqSize, sqSize, lineWidth, KeyMonitor.sneak.isDown() ? pressed : unpressed);
+			
+			x = width - 2*sqSize - 2*spacing;
+			y = spacing;
+			GraphicsHelper.drawRectBordered(event.getPoseStack(), x, y, sqSize, sqSize, lineWidth, KeyMonitor.forward.isDown() ? pressed : unpressed);
+			
+			x = width - 3*sqSize - 3*spacing;
+			y = spacing;
+			GraphicsHelper.drawRectBordered(event.getPoseStack(), x, y, sqSize, sqSize, lineWidth, KeyMonitor.sprint.isDown() ? pressed : unpressed);
+			// TODO: Add ctrl/"helm" icon
+			
+			x = width - 3*sqSize - 3*spacing;
+			y = 2*spacing + sqSize;
+			GraphicsHelper.drawRectBordered(event.getPoseStack(), x, y, sqSize, sqSize, lineWidth, KeyMonitor.left.isDown() ? pressed : unpressed);
+			
+			x = width - 2*sqSize - 2*spacing;
+			y = 2*spacing + sqSize;
+			GraphicsHelper.drawRectBordered(event.getPoseStack(), x, y, sqSize, sqSize, lineWidth, KeyMonitor.back.isDown() ? pressed : unpressed);
+			
+			x = width - sqSize - spacing;
+			y = 2*spacing + sqSize;
+			GraphicsHelper.drawRectBordered(event.getPoseStack(), x, y, sqSize, sqSize, lineWidth, KeyMonitor.right.isDown() ? pressed : unpressed);
+			
+			x = width - 3*sqSize - 3*spacing;
+			y = 3*spacing + 2*sqSize;
+			GraphicsHelper.drawRectBordered(event.getPoseStack(), x, y, width-spacing-x, sqSize/2, lineWidth, KeyMonitor.jump.isDown() ? pressed : unpressed);
+		}
     }
 	
 	@SubscribeEvent
@@ -147,7 +145,7 @@ public class RenderUpdater {
 			String propLobby = obj.getDisplayName().getString();
 			
 			boolean foundLobby = false;
-			for(Lobby l : SettingsLoader.categories.lobbies) {
+			for(Lobby l : LobbyLoader.categories.lobbies) {
 				if(propLobby.toLowerCase().equals(l.name.toLowerCase())) {
 					lobby = l;
 					foundLobby = true;
@@ -165,7 +163,7 @@ public class RenderUpdater {
 			
 			if(!foundLobby) {
 				// Failed to find lobby - default for first for now
-				lobby = SettingsLoader.categories.lobbies.get(0);
+				lobby = LobbyLoader.categories.lobbies.get(0);
 			}
 			
 			boolean matchingCat = false;

@@ -22,7 +22,7 @@ import net.minecraft.server.packs.resources.ResourceManager;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.event.lifecycle.FMLCommonSetupEvent;
 
-public class SettingsLoader {
+public class LobbyLoader {
 	
 	private static final Logger LOGGER = LogManager.getLogger();
 	

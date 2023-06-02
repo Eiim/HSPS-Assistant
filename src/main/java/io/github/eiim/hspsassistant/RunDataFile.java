@@ -29,15 +29,17 @@ public class RunDataFile {
 	}
 	
 	public void appendRun(RunResult run) {
-		LOGGER.debug("Writing run");
-		Gson gson = new Gson();
-		String line = CSVParser.stringsToLine(run.lobby, run.category, gson.toJson(run.variables), ""+run.time, gson.toJson(run.splitTimes));
-		try {
-			fw.write(line);
-			fw.flush();
-		} catch (IOException e) {
-			LOGGER.error("Can't write run data!");
-			e.printStackTrace();
+		if(HSPSConfig.saveAll.get()) {
+			LOGGER.debug("Writing run");
+			Gson gson = new Gson();
+			String line = CSVParser.stringsToLine(run.lobby, run.category, gson.toJson(run.variables), ""+run.time, gson.toJson(run.splitTimes));
+			try {
+				fw.write(line);
+				fw.flush();
+			} catch (IOException e) {
+				LOGGER.error("Can't write run data!");
+				e.printStackTrace();
+			}
 		}
 	}
 	
