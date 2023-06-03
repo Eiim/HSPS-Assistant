@@ -6,6 +6,7 @@ import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 import org.apache.logging.log4j.LogManager;
@@ -47,7 +48,7 @@ public class GoldsFile {
 	
 	public boolean registerRun(Segment run) {
 		for(Segment rr : golds) {
-			if(run.lobby.equals(rr.lobby) && run.category.equals(rr.category) && run.variables.equals(rr.variables) && run.checkpoint == rr.checkpoint) {
+			if(run.lobby.equals(rr.lobby) && run.category.equals(rr.category) && Arrays.equals(run.variables, rr.variables) && run.checkpoint == rr.checkpoint) {
 				if(run.time < rr.time) {
 					setSaveGold(run);
 					return true;
@@ -65,7 +66,7 @@ public class GoldsFile {
 		int i = 0;
 		boolean written = false;
 		for(Segment rr : golds) {
-			if(run.lobby.equals(rr.lobby) && run.category.equals(rr.category) && run.variables.equals(rr.variables) && run.checkpoint == rr.checkpoint) {
+			if(run.lobby.equals(rr.lobby) && run.category.equals(rr.category) && Arrays.equals(run.variables, rr.variables) && run.checkpoint == rr.checkpoint) {
 				golds.set(i, run);
 				written = true;
 			}
@@ -96,7 +97,7 @@ public class GoldsFile {
 	
 	public int getGold(String lobby, String category, String[] variables, int checkpoint) {
 		for(Segment rr : golds) {
-			if(lobby.equals(rr.lobby) && category.equals(rr.category) && variables.equals(rr.variables) && checkpoint == rr.checkpoint) {
+			if(lobby.equals(rr.lobby) && category.equals(rr.category) && Arrays.equals(variables, rr.variables) && checkpoint == rr.checkpoint) {
 				return rr.time;
 			}
 		}

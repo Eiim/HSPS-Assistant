@@ -6,6 +6,7 @@ import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 import org.apache.logging.log4j.LogManager;
@@ -65,7 +66,7 @@ public class PBFile {
 		int i = 0;
 		boolean written = false;
 		for(RunResult rr : pbs) {
-			if(run.lobby.equals(rr.lobby) && run.category.equals(rr.category) && run.variables.equals(rr.variables)) {
+			if(run.lobby.equals(rr.lobby) && run.category.equals(rr.category) && Arrays.equals(run.variables, rr.variables)) {
 				pbs.set(i, run);
 				written = true;
 			}
@@ -96,7 +97,7 @@ public class PBFile {
 	
 	public int getPB(String lobby, String category, String[] variables) {
 		for(RunResult rr : pbs) {
-			if(lobby.equals(rr.lobby) && category.equals(rr.category) && variables.equals(rr.variables)) {
+			if(lobby.equals(rr.lobby) && category.equals(rr.category) && Arrays.equals(variables, rr.variables)) {
 				return rr.time;
 			}
 		}
