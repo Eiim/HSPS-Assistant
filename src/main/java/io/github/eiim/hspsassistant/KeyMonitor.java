@@ -32,11 +32,13 @@ public class KeyMonitor {
 	
 	public static final KeyMapping categoryMapping = new KeyMapping("key.hsps.category", InputConstants.Type.KEYSYM, GLFW.GLFW_KEY_C, "key.categories.hsps");
 	public static final KeyMapping variablesMapping = new KeyMapping("key.hsps.variables", InputConstants.Type.KEYSYM, GLFW.GLFW_KEY_V, "key.categories.hsps");
+	public static final KeyMapping lobbyMapping = new KeyMapping("key.hsps.lobby", InputConstants.Type.KEYSYM, GLFW.GLFW_KEY_B, "key.categories.hsps");
 
 	@SubscribeEvent
 	public static void registerMappings(RegisterKeyMappingsEvent event) {
 		event.register(categoryMapping);
 		event.register(variablesMapping);
+		event.register(lobbyMapping);
 		LOGGER.debug("Registered mappings");
 	}
 	
@@ -50,6 +52,10 @@ public class KeyMonitor {
 			while (variablesMapping.consumeClick()) {
 				RenderUpdater.switchVariables();
 				LOGGER.debug("Variables switched!");
+		    }
+			while (lobbyMapping.consumeClick()) {
+				RenderUpdater.switchLobby();
+				LOGGER.debug("Lobby switched!");
 		    }
 		}
 	}

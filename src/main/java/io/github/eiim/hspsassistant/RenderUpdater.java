@@ -3,6 +3,7 @@ package io.github.eiim.hspsassistant;
 import java.io.File;
 import java.io.IOException;
 import java.nio.file.Path;
+import java.util.ArrayList;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -146,18 +147,9 @@ public class RenderUpdater {
 			
 			boolean foundLobby = false;
 			for(Lobby l : LobbyLoader.categories.lobbies) {
-				if(propLobby.toLowerCase().equals(l.name.toLowerCase())) {
+				if(nameMatch(propLobby, l)) {
 					lobby = l;
 					foundLobby = true;
-				} else {
-					if(l.aliases != null) {
-						for(String s : l.aliases) {
-							if(propLobby.toLowerCase().equals(s.toLowerCase())) {
-								lobby = l;
-								foundLobby = true;
-							}
-						}
-					}
 				}
 			}
 			
@@ -197,6 +189,47 @@ public class RenderUpdater {
 		}
 	}
 	
+	public static void switchLobby() {
+		Scoreboard sb = mc.level.getScoreboard();
+		Objective obj = sb.getDisplayObjective(1);
+		inHypixel = obj != null;
+		if(inHypixel) {
+			String propLobby = obj.getDisplayName().getString();
+			boolean foundCurrent = false;
+			boolean done = false;
+			// Find matching lobbies
+			ArrayList<Lobby> matching = new ArrayList<>();
+			for(Lobby l : LobbyLoader.categories.lobbies) {
+				if(nameMatch(propLobby, l)) matching.add(l);
+			}
+			LOGGER.debug(matching.toString());
+			int currIdx = matching.indexOf(lobby);
+			int newIdx = (currIdx + 1) % matching.size();
+			LOGGER.debug(currIdx+" "+newIdx);
+			if(newIdx != currIdx) {
+				lobby = matching.get(newIdx);
+				boolean matchingCat = false;
+				for(int i = 0; i < lobby.categories.size(); i++) {
+					Category c = lobby.categories.get(i);
+					if(c.name == category.name) {
+						category = c;
+						categoryId = i;
+						matchingCat = true;
+					}
+				}
+				if(!matchingCat) {
+					// Failed to find category - default to first
+					category = lobby.categories.get(0);
+					categoryId = 0;
+				}
+				
+				timing = null;
+				time = "00:00.000";
+				pbTime = Timing.millisToTimestring(pbf.getPB(lobby.name, category.name, variables));
+			}
+		}
+	}
+	
 	public static void switchCategory() {
 		categoryId = (categoryId + 1) % lobby.categories.size();
 		category = lobby.categories.get(categoryId);
@@ -227,6 +260,7 @@ public class RenderUpdater {
 		
 		timing = null;
 		time = "00:00.000";
+		pbTime = Timing.millisToTimestring(pbf.getPB(lobby.name, category.name, variables));
 	}
 	
 	public static void startTiming() {
@@ -286,6 +320,15 @@ public class RenderUpdater {
 		gdf = new GoldsFile(gdFile);
 		
 		// ModList.get().getModFileById("minecraft").getMods().get(0).getVersion();
+	}
+	
+	private static boolean nameMatch(String prop, Lobby lobby) {
+		if(prop.toLowerCase().equals(lobby.name.toLowerCase())) return true;
+		if(lobby.aliases == null) return false;
+		for(String s : lobby.aliases) {
+			if(s.toLowerCase().equals(prop.toLowerCase())) return true;
+		}
+		return false;
 	}
 
 }
