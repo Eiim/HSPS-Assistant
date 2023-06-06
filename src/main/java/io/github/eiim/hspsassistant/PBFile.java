@@ -96,13 +96,13 @@ public class PBFile {
 		
 	}
 	
-	public int getPB(String lobby, String category, String[] variables) {
+	public RunResult getPB(String lobby, String category, String[] variables) {
 		for(RunResult rr : pbs) {
 			if(lobby.equals(rr.lobby) && category.equals(rr.category) && Arrays.equals(variables, rr.variables)) {
-				return rr.time;
+				return rr;
 			}
 		}
-		return 0;
+		return null;
 	}
 
 }

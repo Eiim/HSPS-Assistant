@@ -48,6 +48,17 @@ public class Categories {
 		public List<Override> checkpointOverrides; // Needs to be ordered for determinism
 		Category(){}
 		
+		public int[] getCheckpoints(String[] vars) {
+			if(checkpointOverrides != null) {
+				for(Override o : checkpointOverrides) {
+					if(o.matches(vars)) {
+						return o.checkpoints;
+					}
+				}
+			}
+			return checkpoints;
+		}
+		
 		@java.lang.Override
 		public boolean equals(Object obj) {
 			if (this == obj)

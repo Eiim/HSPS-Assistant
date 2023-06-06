@@ -6,6 +6,7 @@
   "hspsassistant.config.renderKeys": "Enable key visualization?",
   "hspsassistant.config.savePartial": "Save partial runs?",
   "hspsassistant.config.saveAll": "Save all runs?",
+  "hspsassistant.config.savePartial": "Compare to SOB?",
   "hspsassistant.config.uiColor": "UI Color",
   "hspsassistant.config.bgColor": "Background Color",
   "hspsassistant.config.keyOpacity": "Key Opacity",

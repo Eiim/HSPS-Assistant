@@ -37,11 +37,11 @@ public class RenderUpdater {
 	private static String[] variables = new String[0];
 	private static int variablesId;
 	private static int variablesOptions;
-	private static boolean inHypixel = true;
+	private static boolean inHypixel = false;
 	private static boolean worldRefreshed = false;
 	private static Timing timing;
 	private static String time = "00:00.000";
-	private static String pbTime = "00:00.000";
+	private static RunResult pb;
 	
 	private static RunDataFile rdf;
 	private static PBFile pbf;
@@ -64,19 +64,43 @@ public class RenderUpdater {
 			int lineWidth = 1;
 			int width = maxWidth + 2*padding;
 			int height = 7 + 2*padding;
+			int pbsob = 0;
+			
+			if(HSPSConfig.compareSOB.get()) {
+				int[] cps = category.getCheckpoints(variables);
+				for(int i = 0; i <= cps.length; i++) {
+					int goldsplit = gdf.getGold(lobby.name, category.name, variables, i == cps.length ? lobby.checkpoints+1 : cps[i]);
+					if(goldsplit == Integer.MAX_VALUE) {
+						pbsob = 0;
+						break;
+					}
+					pbsob += goldsplit;
+				}
+			} else {
+				pbsob = pb == null ? 0 : pb.time;
+			}
 			
 			ColorSettings tlcs = new ColorSettings(0xFF000000+HSPSConfig.uiColor.get(), HSPSConfig.bgOpacity.get() << 24 + HSPSConfig.bgColor.get(), 0xFF000000+HSPSConfig.uiColor.get());
 			
 			GraphicsHelper.drawRectTextBordered(event.getPoseStack(), screenBorder, screenBorder, width, height, TITLE, lineWidth, tlcs);
 			GraphicsHelper.drawRectTextBordered(event.getPoseStack(), screenBorder, screenBorder + 6 + 2*padding, width, height, (lobby == null ? "" : lobby.name), lineWidth, tlcs);
 			GraphicsHelper.drawRectTextBordered(event.getPoseStack(), screenBorder, screenBorder + 12 + 4*padding, width, height, catString, lineWidth, tlcs);
-			GraphicsHelper.drawRectTextBordered(event.getPoseStack(), screenBorder, screenBorder + 18 + 6*padding, width, height, time+" | "+pbTime, lineWidth, tlcs);
+			GraphicsHelper.drawRectTextBordered(event.getPoseStack(), screenBorder, screenBorder + 18 + 6*padding, width, height, time+" | "+Timing.millisToTimestring(pbsob), lineWidth, tlcs);
 			
 			if(timing != null) {
 				for(int i = 0; i < timing.segmentTimes.length; i++) {
 					String cp = i == timing.checkpoints.length ? "Finish" : "CP "+timing.checkpoints[i];
 					GraphicsHelper.drawRectTextBordered(event.getPoseStack(), screenBorder, screenBorder + (6 + 2*padding)*(i+4), width/2, height, cp, lineWidth, tlcs);
-					GraphicsHelper.drawRectTextBordered(event.getPoseStack(), screenBorder + width/2, screenBorder + (6 + 2*padding)*(i+4), width/2, height, Timing.millisToTimestring(timing.segmentTimes[i]), lineWidth, tlcs);
+					int time = timing.segmentTimes[i];
+					if(time == 0) {
+						if(HSPSConfig.compareSOB.get()) {
+							int cpn = i == timing.checkpoints.length ? lobby.checkpoints+1 : timing.checkpoints[i];
+							time = gdf.getGold(lobby.name, category.name, variables, cpn);
+						} else {
+							time = pb.splitTimes[i];
+						}
+					}
+					GraphicsHelper.drawRectTextBordered(event.getPoseStack(), screenBorder + width/2, screenBorder + (6 + 2*padding)*(i+4), width/2, height, Timing.millisToTimestring(time), lineWidth, tlcs);
 				}
 			}
 		}
@@ -185,7 +209,7 @@ public class RenderUpdater {
 			
 			timing = null;
 			time = "00:00.000";
-			pbTime = Timing.millisToTimestring(pbf.getPB(lobby.name, category.name, variables));
+			pb = pbf.getPB(lobby.name, category.name, variables);
 		}
 	}
 	
@@ -225,7 +249,7 @@ public class RenderUpdater {
 				
 				timing = null;
 				time = "00:00.000";
-				pbTime = Timing.millisToTimestring(pbf.getPB(lobby.name, category.name, variables));
+				pb = pbf.getPB(lobby.name, category.name, variables);
 			}
 		}
 	}
@@ -244,7 +268,7 @@ public class RenderUpdater {
 		
 		timing = null;
 		time = "00:00.000";
-		pbTime = Timing.millisToTimestring(pbf.getPB(lobby.name, category.name, variables));
+		pb = pbf.getPB(lobby.name, category.name, variables);
 	}
 	
 	public static void switchVariables() {
@@ -260,18 +284,11 @@ public class RenderUpdater {
 		
 		timing = null;
 		time = "00:00.000";
-		pbTime = Timing.millisToTimestring(pbf.getPB(lobby.name, category.name, variables));
+		pb = pbf.getPB(lobby.name, category.name, variables);
 	}
 	
 	public static void startTiming() {
-		int[] cps = category.checkpoints;
-		if(category.checkpointOverrides != null) {
-			for(Categories.Override o : category.checkpointOverrides) {
-				if(o.matches(variables)) {
-					cps = o.checkpoints;
-				}
-			}
-		}
+		int[] cps = category.getCheckpoints(variables);
 		timing = new Timing(cps);
 	}
 	
@@ -289,7 +306,6 @@ public class RenderUpdater {
 			rdf.appendRun(rr);
 			pbf.registerRun(rr);
 			// If we got a PB, display it
-			pbTime = Timing.millisToTimestring(pbf.getPB(lobby.name, category.name, variables));
 		}
 		gdf.registerRun(new Segment(lobby.name, category.name, variables, timing.lastCP, delta));
 	}

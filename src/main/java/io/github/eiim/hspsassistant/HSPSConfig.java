@@ -10,6 +10,7 @@ public class HSPSConfig {
 	
 	public static final ConfigValue<Boolean> renderKeys;
 	public static final ConfigValue<Boolean> savePartial;
+	public static final ConfigValue<Boolean> compareSOB;
 	public static final ConfigValue<Boolean> saveAll;
 	public static final ConfigValue<Integer> uiColor;
 	public static final ConfigValue<Integer> bgColor;
@@ -24,13 +25,17 @@ public class HSPSConfig {
 				.translation("hspsassistant.config.renderKeys")
 				.define("renderKeys", true);
 		savePartial = BUILDER
-				.comment("Save partial runs? (Not currently implemented)")
+				.comment("Save partial runs? (not currently implemented)")
 				.translation("hspsassistant.config.savePartial")
 				.define("savePartial", false);
 		saveAll = BUILDER
 				.comment("Save all runs?")
 				.translation("hspsassistant.config.saveAll")
 				.define("saveAll", true);
+		compareSOB = BUILDER
+				.comment("Compare to SOB instead of PB?")
+				.translation("hspsassistant.config.compareSOB")
+				.define("compareSOB", false);
 		uiColor = BUILDER
 				.comment("UI Color")
 				.translation("hspsassistant.config.uiColor")
