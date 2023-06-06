@@ -48,7 +48,7 @@ public class PBFile {
 	
 	public boolean registerRun(RunResult run) {
 		for(RunResult rr : pbs) {
-			if(run.lobby.equals(rr.lobby) && run.category.equals(rr.category) && run.variables.equals(rr.variables)) {
+			if(run.lobby.equals(rr.lobby) && run.category.equals(rr.category) && Arrays.equals(run.variables, rr.variables)) {
 				if(run.time < rr.time) {
 					setSavePB(run);
 					return true;
@@ -57,6 +57,7 @@ public class PBFile {
 				}
 			}
 		}
+		LOGGER.debug("New run!");
 		setSavePB(run);
 		return true;
 	}
