@@ -82,15 +82,15 @@ public class RenderUpdater {
 			
 			ColorSettings tlcs = new ColorSettings(0xFF000000+HSPSConfig.uiColor.get(), HSPSConfig.bgOpacity.get() << 24 + HSPSConfig.bgColor.get(), 0xFF000000+HSPSConfig.uiColor.get());
 			
-			GraphicsHelper.drawRectTextBordered(event.getPoseStack(), screenBorder, screenBorder, width, height, TITLE, lineWidth, tlcs);
-			GraphicsHelper.drawRectTextBordered(event.getPoseStack(), screenBorder, screenBorder + 6 + 2*padding, width, height, (lobby == null ? "" : lobby.name), lineWidth, tlcs);
-			GraphicsHelper.drawRectTextBordered(event.getPoseStack(), screenBorder, screenBorder + 12 + 4*padding, width, height, catString, lineWidth, tlcs);
-			GraphicsHelper.drawRectTextBordered(event.getPoseStack(), screenBorder, screenBorder + 18 + 6*padding, width, height, time+" | "+Timing.millisToTimestring(pbsob), lineWidth, tlcs);
+			GraphicsHelper.drawRectTextBordered(screenBorder, screenBorder, width, height, TITLE, lineWidth, tlcs);
+			GraphicsHelper.drawRectTextBordered(screenBorder, screenBorder + 6 + 2*padding, width, height, (lobby == null ? "" : lobby.name), lineWidth, tlcs);
+			GraphicsHelper.drawRectTextBordered(screenBorder, screenBorder + 12 + 4*padding, width, height, catString, lineWidth, tlcs);
+			GraphicsHelper.drawRectTextBordered(screenBorder, screenBorder + 18 + 6*padding, width, height, time+" | "+Timing.millisToTimestring(pbsob), lineWidth, tlcs);
 			
 			if(timing != null) {
 				for(int i = 0; i < timing.segmentTimes.length; i++) {
 					String cp = i == timing.checkpoints.length ? "Finish" : "CP "+timing.checkpoints[i];
-					GraphicsHelper.drawRectTextBordered(event.getPoseStack(), screenBorder, screenBorder + (6 + 2*padding)*(i+4), width/2, height, cp, lineWidth, tlcs);
+					GraphicsHelper.drawRectTextBordered(screenBorder, screenBorder + (6 + 2*padding)*(i+4), width/2, height, cp, lineWidth, tlcs);
 					int time = timing.segmentTimes[i];
 					if(time == 0) {
 						if(HSPSConfig.compareSOB.get()) {
@@ -100,7 +100,7 @@ public class RenderUpdater {
 							time = pb.splitTimes[i];
 						}
 					}
-					GraphicsHelper.drawRectTextBordered(event.getPoseStack(), screenBorder + width/2, screenBorder + (6 + 2*padding)*(i+4), width/2, height, Timing.millisToTimestring(time), lineWidth, tlcs);
+					GraphicsHelper.drawRectTextBordered(screenBorder + width/2, screenBorder + (6 + 2*padding)*(i+4), width/2, height, Timing.millisToTimestring(time), lineWidth, tlcs);
 				}
 			}
 		}
@@ -116,32 +116,32 @@ public class RenderUpdater {
 			
 			int x = width - sqSize - spacing;
 			int y = spacing;
-			GraphicsHelper.drawRectBordered(event.getPoseStack(), x, y, sqSize, sqSize, lineWidth, KeyMonitor.sneak.isDown() ? pressed : unpressed);
+			GraphicsHelper.drawRectBordered(x, y, sqSize, sqSize, lineWidth, KeyMonitor.sneak.isDown() ? pressed : unpressed);
 			
 			x = width - 2*sqSize - 2*spacing;
 			y = spacing;
-			GraphicsHelper.drawRectBordered(event.getPoseStack(), x, y, sqSize, sqSize, lineWidth, KeyMonitor.forward.isDown() ? pressed : unpressed);
+			GraphicsHelper.drawRectBordered(x, y, sqSize, sqSize, lineWidth, KeyMonitor.forward.isDown() ? pressed : unpressed);
 			
 			x = width - 3*sqSize - 3*spacing;
 			y = spacing;
-			GraphicsHelper.drawRectBordered(event.getPoseStack(), x, y, sqSize, sqSize, lineWidth, KeyMonitor.sprint.isDown() ? pressed : unpressed);
+			GraphicsHelper.drawRectBordered(x, y, sqSize, sqSize, lineWidth, KeyMonitor.sprint.isDown() ? pressed : unpressed);
 			// TODO: Add ctrl/"helm" icon
 			
 			x = width - 3*sqSize - 3*spacing;
 			y = 2*spacing + sqSize;
-			GraphicsHelper.drawRectBordered(event.getPoseStack(), x, y, sqSize, sqSize, lineWidth, KeyMonitor.left.isDown() ? pressed : unpressed);
+			GraphicsHelper.drawRectBordered(x, y, sqSize, sqSize, lineWidth, KeyMonitor.left.isDown() ? pressed : unpressed);
 			
 			x = width - 2*sqSize - 2*spacing;
 			y = 2*spacing + sqSize;
-			GraphicsHelper.drawRectBordered(event.getPoseStack(), x, y, sqSize, sqSize, lineWidth, KeyMonitor.back.isDown() ? pressed : unpressed);
+			GraphicsHelper.drawRectBordered(x, y, sqSize, sqSize, lineWidth, KeyMonitor.back.isDown() ? pressed : unpressed);
 			
 			x = width - sqSize - spacing;
 			y = 2*spacing + sqSize;
-			GraphicsHelper.drawRectBordered(event.getPoseStack(), x, y, sqSize, sqSize, lineWidth, KeyMonitor.right.isDown() ? pressed : unpressed);
+			GraphicsHelper.drawRectBordered(x, y, sqSize, sqSize, lineWidth, KeyMonitor.right.isDown() ? pressed : unpressed);
 			
 			x = width - 3*sqSize - 3*spacing;
 			y = 3*spacing + 2*sqSize;
-			GraphicsHelper.drawRectBordered(event.getPoseStack(), x, y, width-spacing-x, sqSize/2, lineWidth, KeyMonitor.jump.isDown() ? pressed : unpressed);
+			GraphicsHelper.drawRectBordered(x, y, width-spacing-x, sqSize/2, lineWidth, KeyMonitor.jump.isDown() ? pressed : unpressed);
 		}
     }
 	
@@ -219,8 +219,6 @@ public class RenderUpdater {
 		inHypixel = obj != null;
 		if(inHypixel) {
 			String propLobby = obj.getDisplayName().getString();
-			boolean foundCurrent = false;
-			boolean done = false;
 			// Find matching lobbies
 			ArrayList<Lobby> matching = new ArrayList<>();
 			for(Lobby l : LobbyLoader.categories.lobbies) {

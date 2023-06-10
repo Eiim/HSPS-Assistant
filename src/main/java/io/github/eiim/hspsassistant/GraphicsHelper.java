@@ -1,52 +1,52 @@
 package io.github.eiim.hspsassistant;
 
-import com.mojang.blaze3d.vertex.PoseStack;
-
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Font;
-import net.minecraft.client.gui.GuiComponent;
+import net.minecraft.client.gui.GuiGraphics;
 
 public class GraphicsHelper {
 	
-	private static Font ft = Minecraft.getInstance().font;
+	private static final Minecraft mc = Minecraft.getInstance();
+	private static final Font ft = mc.font;
+	private static final GuiGraphics guig = new GuiGraphics(mc, mc.renderBuffers().bufferSource());
 	
-	public static void drawRect(PoseStack ps, int x, int y, int width, int height, ColorSettings cs) {
-		GuiComponent.fill(ps, x, y, x+width, y+height, cs.fillColor);
+	public static void drawRect(int x, int y, int width, int height, ColorSettings cs) {
+		guig.fill(x, y, x+width, y+height, cs.fillColor);
 	}
 	
-	public static void drawRectBordered(PoseStack ps, int x, int y, int width, int height, int lineWidth, ColorSettings cs) {
+	public static void drawRectBordered(int x, int y, int width, int height, int lineWidth, ColorSettings cs) {
 		// Fill
-		GuiComponent.fill(ps, x, y, x+width, y+height, cs.fillColor);
+		guig.fill(x, y, x+width, y+height, cs.fillColor);
 		
 		// Border
 		int offsetIn = (int)Math.ceil(lineWidth/2.0);
 		int offsetOut = (int)Math.floor(lineWidth/2.0);
-		GuiComponent.fill(ps, x-offsetOut, y-offsetOut, x+offsetIn, y+height+offsetOut, cs.borderColor); // Left
-		GuiComponent.fill(ps, x+width-offsetIn, y-offsetOut, x+width+offsetOut, y+height+offsetOut, cs.borderColor); // Right
-		GuiComponent.fill(ps, x+offsetIn, y-offsetOut, x+width-offsetIn, y+offsetIn, cs.borderColor); // Top
-		GuiComponent.fill(ps, x+offsetIn, y+height-offsetIn, x+width-offsetIn, y+height+offsetOut, cs.borderColor); // Bottom
+		guig.fill(x-offsetOut, y-offsetOut, x+offsetIn, y+height+offsetOut, cs.borderColor); // Left
+		guig.fill(x+width-offsetIn, y-offsetOut, x+width+offsetOut, y+height+offsetOut, cs.borderColor); // Right
+		guig.fill(x+offsetIn, y-offsetOut, x+width-offsetIn, y+offsetIn, cs.borderColor); // Top
+		guig.fill(x+offsetIn, y+height-offsetIn, x+width-offsetIn, y+height+offsetOut, cs.borderColor); // Bottom
 	}
 	
-	public static void drawText(PoseStack ps, String text, float x, float y, ColorSettings cs) {
-		ft.draw(ps, text, x, y, cs.textColor);
+	public static void drawText(String text, int x, int y, ColorSettings cs) {
+		guig.drawString(ft, text, x, y, cs.textColor);
 	}
 	
-	public static void drawTextShadow(PoseStack ps, String text, float x, float y, ColorSettings cs) {
-		ft.drawShadow(ps, text, x, y, cs.textColor);
+	public static void drawTextCentered(String text, int x, int y, ColorSettings cs) {
+		guig.drawCenteredString(ft, text, x, y, cs.textColor);
 	}
 	
-	public static void drawRectText(PoseStack ps, int x, int y, int width, int height, String text, ColorSettings cs) {
-		drawRect(ps, x, y, width, height, cs);
+	public static void drawRectText(int x, int y, int width, int height, String text, ColorSettings cs) {
+		drawRect(x, y, width, height, cs);
 		int textWidth = ft.width(text);
 		int textHeight = ft.lineHeight-2; // Returned lineHeight includes more ascenders/descenders than we want, rough adjustment
-		drawText(ps, text, x + (width-textWidth)/2, y + (height-textHeight)/2, cs);
+		drawText(text, x + (width-textWidth)/2, y + (height-textHeight)/2, cs);
 	}
 	
-	public static void drawRectTextBordered(PoseStack ps, int x, int y, int width, int height, String text, int lineWidth, ColorSettings cs) {
-		drawRectBordered(ps, x, y, width, height, lineWidth, cs);
+	public static void drawRectTextBordered(int x, int y, int width, int height, String text, int lineWidth, ColorSettings cs) {
+		drawRectBordered(x, y, width, height, lineWidth, cs);
 		int textWidth = ft.width(text);
 		int textHeight = ft.lineHeight-2; // Returned lineHeight includes more ascenders/descenders than we want, rough adjustment
-		drawText(ps, text, x + (width-textWidth)/2, y + (height-textHeight)/2, cs);
+		drawText(text, x + (width-textWidth)/2, y + (height-textHeight)/2, cs);
 	}
 	
 	// varargs is nice to allow us to calculate a max of multiple strings for alignment, but might remove in the future if not necessary.
